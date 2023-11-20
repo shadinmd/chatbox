@@ -12,8 +12,6 @@
 - @reduxjs/toolkit
 - gsap
 
----
-
 ## Run locally
 
 first clone the repository
