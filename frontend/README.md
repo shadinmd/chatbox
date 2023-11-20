@@ -2,7 +2,7 @@
 
 > this is a nextjs app made with create-next-app
 
-### technologies used
+## technologies used
 
 - react-hook-form
 - zod
@@ -12,7 +12,9 @@
 - @reduxjs/toolkit
 - gsap
 
-### Run locally
+---
+
+## Run locally
 
 first clone the repository
 
