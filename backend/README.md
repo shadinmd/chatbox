@@ -16,24 +16,38 @@
     - [/login](#authlogin)
     - [/register](#authregister)
     - [/reset password](#authresetpassword)
+    - [/refresh](#auth)
 
 - [/user](#user) : 
     - [/user](#user)
     - [/user/:id](#userid)
     - [/user/change password](#userchangepassword)
+    - [/user/edit](#useredit)
 
 
 - [/chat](#chat) : 
     - [/messages](#chatmessages)
+    - [/request/:id](#chatrequestid)
+    - [/accept/:id](#chatacceptid)
 
 
 - [/call](#call) : 
     - [history](#callhistory)
 
+- [/feedback](#)
+    -[/feedback/](#feedback)
 
 - [/admin](#admin) : 
-    - [/user/](#adminuser)
-    - [/user/:id](#adminuserid)
+    - others
+        - [/overview](#adminoverview)
+        - [/calls](#admincalls)
+        - [/feedback](#admin)
+    - user routes
+        - [/user/](#adminuser)
+        - [/user/:id](#adminuserid)
+        - [/user/block](#adminuserblock)
+        - [/user/mail](#adminusermail)
+        - [/user/admin](#adminuseradmin)
 
 
 ### /auth
@@ -105,6 +119,26 @@
             }
         ```
 
+#### /auth/refresh
+
+- method: `GET`
+- description: get a new access token with the refresh token
+- request: 
+    - header:
+        ```javascript
+            {
+                Access-Token: stirng
+            }
+        ```
+- response:
+    - body:
+        ```javascript
+            {
+                success: boolean,
+                message: string,
+                token: string
+            }
+        ```
 
 ### /user
 > user related routes
@@ -245,7 +279,23 @@
 
 #### /chat/accept/:id
 
-- method: 
+- method: `POST`
+- description: accept a friend request
+- request: 
+    - params:
+        ```javascript
+            {
+                id: string 
+            }
+        ```
+- response: 
+    - body: 
+        ```javascript
+            {
+                success: boolean,
+                message: string
+            }
+        ```
 
 ### /call
 > call related routes
@@ -269,6 +319,49 @@
                     }>
             }
         ```
+
+### feedback
+> feedback related routes
+
+#### /feedback/
+
+- method: `GET`
+- description: get all feedbacks, this route is only for admin
+- response
+    - body:
+        ```javascript
+            {
+                success: boolean,
+                message: string,
+                feedbacks: Array<{
+                    user: string,
+                    content: string,
+                    createdAt: Date
+                }>
+            }
+        ```
+
+<br/>
+
+- method: `POST`
+- description: create new feedback user and admin
+- request:
+    - body:
+        ```javascript
+            {
+                user: string,
+                content: string 
+            }
+        ```
+- response
+    - body:
+        ```javascript
+            {
+                success: boolean,
+                message: string
+            }
+        ```
+
 
 ### /admin
 > chat related routes
@@ -309,7 +402,7 @@
 <br /> 
 
 - method: `POST`
-- descriptoin: create a new user
+- description: create a new user
 - request: 
     - body: 
         ```javascript
@@ -400,3 +493,104 @@
             }
         ```
 
+#### /admin/user/block
+
+- method: `POST`
+- description: block a user 
+- request:
+    - body:
+        ```javascript
+            {
+                user: string,
+            }
+        ```
+- response:
+    - body: 
+        ```javacsript
+            {
+                success: boolean,
+                message: string
+            }
+        ```
+
+
+#### /admin/user/mail
+
+- method: `POST`
+- description: send mail to a user from company email
+- request: 
+    - body:
+        ```javascript
+            {
+                user: string,
+                subject: string,
+                content: string
+            }
+        ```
+- response:
+    - body:
+        ```javascript
+            {
+                success: boolean,
+                message: string
+            }
+        ```
+
+- method: `GET`
+- description: get all mails
+- response: 
+    - body:
+        ```javascript
+            {
+                success: boolean,
+                message: string,
+                mails: Array<{
+                    sender: string,
+                    content: string,
+                    to: string,
+                    subject: string,
+                    createdAt: Date
+                }>
+            }
+        ```
+
+#### /admin/user/admin
+
+- method: `POST`
+- description: make a user admin
+- request: 
+    - body: 
+        ```javascript
+            {
+                user: string
+            }
+        ```
+- response:
+    - body:
+        ```javascript
+            {
+                success: boolean,
+                message: string
+            }
+        ```
+
+
+#### /admin/calls
+
+- method: `GET`
+- description: get call acticities
+- response:
+    - body: 
+        ```javascript
+            {
+                success: boolean,
+                message: string,
+                calls: Array<{
+                    caller: string,
+                    reciever: string,
+                    status: "ACCEPTED", "REJECTED", "MISSED",
+                    time: Date,
+                    createdAt: Date
+                }>
+            }
+        ```
