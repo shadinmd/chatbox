@@ -2,6 +2,7 @@ import createServer from "./configs/server"
 import connectDb from "./configs/database"
 
 import authRoute from "./routes/auth.route"
+import { Request, Response } from "express"
 
 const app = createServer()
 connectDb()
@@ -9,10 +10,8 @@ connectDb()
 // routes
 app.use("/auth", authRoute)
 
-app.get("/", (req: any, res: any) => {
-	res.send({
-		message: "hello world"
-	})
+app.get("/", (req: Request, res: Response) => {
+	res.redirect("https://shadinmhd.in")
 })
 
 const PORT = process.env.PORT
