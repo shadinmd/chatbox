@@ -18,6 +18,20 @@ const userSchema = new mongoose.Schema<IUser>({
 	active: {
 		type: Boolean,
 		default: true
+	},
+	bio: {
+		type: String
+	},
+	admin: {
+		type: Boolean,
+		default: false
+	},
+	image: {
+		type: String
+	},
+	verified: {
+		type: Boolean,
+		default: false
 	}
 }, { timestamps: true })
 

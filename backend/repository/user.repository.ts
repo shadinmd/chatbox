@@ -19,6 +19,33 @@ class UserRepository {
 			}
 		}
 	}
+
+	async update(user: IUser) {
+		try {
+			const response = await UserModel.updateOne({ _id: user._id }, { $set: { email: user.email } })
+		} catch (error) {
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
+
+	async findByEmail(email: string) {
+		try {
+			const response = await UserModel.find({ email })
+			return {
+				success: true,
+				message: "user found",
+				user: response
+			}
+		} catch (error) {
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
 }
 
 export default UserRepository
