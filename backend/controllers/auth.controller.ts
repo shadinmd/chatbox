@@ -11,15 +11,27 @@ class AuthController {
 		try {
 
 		} catch (error) {
-
+			return {
+				status: 500,
+				data: {
+					success: false,
+					message: "server error"
+				}
+			}
 		}
 	}
 
 	async register(req: Request, res: Response) {
 		try {
-
+			
 		} catch (error) {
-
+			return {
+				status: 500,
+				data: {
+					success: false,
+					message: "server error"
+				}
+			}
 		}
 	}
 }

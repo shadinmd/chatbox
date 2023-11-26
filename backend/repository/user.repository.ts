@@ -23,6 +23,10 @@ class UserRepository {
 	async update(user: IUser) {
 		try {
 			const response = await UserModel.updateOne({ _id: user._id }, { $set: { email: user.email } })
+			return {
+				success: true,
+				message: "user updated"
+			}
 		} catch (error) {
 			return {
 				success: false,
@@ -33,10 +37,26 @@ class UserRepository {
 
 	async findByEmail(email: string) {
 		try {
-			const response = await UserModel.find({ email })
+			const response = await UserModel.findOne({ email })
 			return {
 				success: true,
 				message: "user found",
+				user: response
+			}
+		} catch (error) {
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
+
+	async findById(id: string) {
+		try {
+			const response = await UserModel.findOne({ id })
+			return {
+				success: true,
+				message: "found user",
 				user: response
 			}
 		} catch (error) {
