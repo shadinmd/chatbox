@@ -19,7 +19,7 @@ const messageSchema = new mongoose.Schema<IMessage>({
 	},
 	type: {
 		type: String,
-		enum: ["FILE", "AUDIO", "TEXT"]
+	enum: ["FILE", "AUDIO", "TEXT"]
 	},
 	file: {
 		type: String,

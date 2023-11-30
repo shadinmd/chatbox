@@ -10,10 +10,11 @@ class UserController {
 
 	async getUserDetails(req: Request, res: Response) {
 		try {
-			const { id } = req.body
-			const response = await this.userUsecase.userDetails(id)
+			const { authorization } = req.headers
+			const response = await this.userUsecase.userDetails(authorization as string)
 			res.status(response.status).send(response.data)
 		} catch (error) {
+			console.log(error)
 			res.status(500).send({
 				success: false,
 				message: "server error"
@@ -23,8 +24,8 @@ class UserController {
 
 	async edit(req: Request, res: Response) {
 		try {
-			const { username, email, id } = req.body
-			const response = await this.userUsecase.edit({ username, email, id })
+			const { username, email, _id, bio } = req.body
+			const response = await this.userUsecase.edit({ username, email, _id, bio })
 			res.status(response.status).send(response.data)
 		} catch (error) {
 			console.log(error)
