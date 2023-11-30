@@ -1,3 +1,4 @@
+import { Request, Response } from "express"
 import AdminUsecase from "../usecases/admin.usecase"
 
 class AdminController {
@@ -7,9 +8,53 @@ class AdminController {
 		this.adminUsecase = adminUsecase
 	}
 
-	async getUserDetails() { }
-	async editUser() { }
-	async createUser() { }
+	async getAllUsers(req: Request, res: Response) {
+		try {
+			const response = await this.adminUsecase.getAllUsers()
+			res.status(response.status).send(response.data)
+		} catch (error) {
+			res.status(500).send({
+				success: false,
+				message: "server error"
+			})
+		}
+	}
+	async getUserDetails(req: Request, res: Response) {
+		try {
+			const { id } = req.params
+			const response = await this.adminUsecase.getUserDetails(id)
+			res.status(response.status).send(response.data)
+		} catch (error) {
+			res.status(500).send({
+				success: false,
+				message: "server error"
+			})
+		}
+	}
+	async editUser(req: Request, res: Response) {
+		try {
+			const { id } = req.params
+			const response = await this.adminUsecase.editUser({ _id: id, ...req.body })
+			res.status(response.status).send(response.data)
+		} catch (error) {
+			res.status(500).send({
+				success: false,
+				message: "server error"
+			})
+		}
+
+	}
+	async createUser(req: Request, res: Response) {
+		try {
+
+		} catch (error) {
+			res.status(500).send({
+				success: false,
+				message: "server error"
+			})
+		}
+
+	}
 }
 
 export default AdminController

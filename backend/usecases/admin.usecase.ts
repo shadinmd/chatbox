@@ -1,3 +1,4 @@
+import IUser from "../interface/user"
 import UserRepository from "../repository/user.repository"
 
 class AdminUsecase {
@@ -7,6 +8,27 @@ class AdminUsecase {
 		this.userRepository = userRepository
 	}
 
+	async getAllUsers() {
+		try {
+			const response = await this.userRepository.findAllUsers()
+			return {
+				status: response.success ? 200 : 500,
+				data: {
+					success: response.success,
+					message: response.message,
+					users: response.users || "empty"
+				}
+			}
+		} catch (error) {
+			return {
+				status: 500,
+				data: {
+					success: false,
+					message: "server error"
+				}
+			}
+		}
+	}
 	async getUserDetails(id: string) {
 		try {
 			const response = await this.userRepository.findById(id)
@@ -14,7 +36,8 @@ class AdminUsecase {
 				status: response.success ? 200 : 500,
 				data: {
 					success: response.success,
-					message: response.message
+					message: response.message,
+					user: response.user || "not found"
 				}
 			}
 		} catch (error) {
@@ -28,7 +51,28 @@ class AdminUsecase {
 			}
 		}
 	}
-	async editUser() { }
+	async editUser(user: IUser) {
+		try {
+			const response = await this.userRepository.update(user)
+			return {
+				status: response.success ? 200 : 500,
+				data: {
+					success: response.success,
+					message: response.message,
+					user: response.user || "failed to update"
+				}
+			}
+		} catch (error) {
+			console.log(error)
+			return {
+				status: 500,
+				data: {
+					success: false,
+					message: "server error"
+				}
+			}
+		}
+	}
 	async createUser() { }
 }
 
