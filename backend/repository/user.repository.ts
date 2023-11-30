@@ -11,8 +11,15 @@ class UserRepository {
 				success: true,
 				message: "user created"
 			}
-		} catch (error) {
+		} catch (error: any) {
 			console.log(error)
+			if (error.code == 11000) {
+				const field = Object.keys(error.keyPattern)[0]
+				return {
+					success: false,
+					message: `${field} all ready in use`
+				}
+			}
 			return {
 				success: false,
 				message: "database error"
@@ -22,12 +29,24 @@ class UserRepository {
 
 	async update(user: IUser) {
 		try {
-			const response = await UserModel.updateOne({ _id: user._id }, { $set: { email: user.email } })
+			const response = await UserModel.findOneAndUpdate({ _id: user._id }, {
+				$set:
+				{
+					email: user.email,
+					bio: user.bio,
+					username: user.username,
+					admin: user.admin,
+					active: user.active
+				}
+			}, { new: true })
+
 			return {
 				success: true,
-				message: "user updated"
+				message: "user updated",
+				user: response
 			}
 		} catch (error) {
+			console.log(error)
 			return {
 				success: false,
 				message: "database error"
@@ -53,11 +72,28 @@ class UserRepository {
 
 	async findById(id: string) {
 		try {
-			const response = await UserModel.findOne({ id })
+			const response = await UserModel.findOne({ _id: id }, { password: false })
 			return {
 				success: true,
-				message: "found user",
+				message: "fetched user",
 				user: response
+			}
+		} catch (error) {
+			console.log(error)
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
+
+	async findAllUsers() {
+		try {
+			const response = await UserModel.find({}, { id: false, password: false })
+			return {
+				success: true,
+				message: "fetched all users",
+				users: response
 			}
 		} catch (error) {
 			return {

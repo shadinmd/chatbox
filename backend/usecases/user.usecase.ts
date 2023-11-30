@@ -1,5 +1,6 @@
 import IUser from "../interface/user"
 import UserRepository from "../repository/user.repository"
+import jwt from "jsonwebtoken"
 
 class UserUsecase {
 	private userRepository: UserRepository
@@ -8,14 +9,17 @@ class UserUsecase {
 		this.userRepository = userRepository
 	}
 
-	async userDetails(id: string) {
-		const response = await this.userRepository.findById(id)
+	async userDetails(token: string) {
+		console.log(token)
+		const id = jwt.verify(token, process.env.JWT_SECRET as string)
+		const response = await this.userRepository.findById(id as string)
 		try {
 			return {
 				status: response.success ? 200 : 500,
 				data: {
 					success: response.success,
-					message: response.message
+					message: response.message,
+					user: response.user
 				}
 			}
 		} catch (error) {
@@ -37,7 +41,8 @@ class UserUsecase {
 				status: response.success ? 200 : 500,
 				data: {
 					success: response.success,
-					message: response.message
+					message: response.message,
+					user: response.user || "failed"
 				}
 			}
 		} catch (error) {
