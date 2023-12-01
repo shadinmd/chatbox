@@ -39,13 +39,14 @@ const Profile = () => {
 	})
 
 	const submit = async (data: formType) => {
+		console.log(data.image)
 		dispatch(editUser({ ...data, _id: user.user._id }))
 	}
 
 	return (
 		<Container>
 			{
-				user.loading ?
+				user.loading ?	
 					<div>
 						loading
 					</div> :
@@ -53,6 +54,12 @@ const Profile = () => {
 						onSubmit={handleSubmit(submit)}
 						className="flex flex-col gap-2"
 					>
+						<input
+							{...register("image")}
+							type="file"
+							name="image"
+							className={inputStyle}
+						/>
 						<input
 							{...register("username")}
 							type="text"

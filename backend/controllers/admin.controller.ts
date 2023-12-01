@@ -10,7 +10,8 @@ class AdminController {
 
 	async getAllUsers(req: Request, res: Response) {
 		try {
-			const response = await this.adminUsecase.getAllUsers()
+			const { name } = req.query
+			const response = await this.adminUsecase.getAllUsers({name: name as string})
 			res.status(response.status).send(response.data)
 		} catch (error) {
 			res.status(500).send({

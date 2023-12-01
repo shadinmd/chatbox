@@ -35,7 +35,25 @@ const users = () => {
 	}, [])
 
 	useEffect(() => {
-		console.log(search)
+		(async () => {
+			try {
+				const response = await Api.get(`/admin/user?name=${search}`)
+				if (response.data.success) {
+					setUsers(response.data.users)
+				} else {
+					toast.error(response.data.message)
+				}
+			} catch (error) {
+				if (isAxiosError(error)) {
+					if (error.response?.data.message)
+						toast.error(error.response.data.message)
+					else
+						toast.error(error.message)
+				} else {
+					console.log(error)
+				}
+			}
+		})()
 	}, [search])
 
 	return (

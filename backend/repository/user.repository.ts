@@ -87,9 +87,13 @@ class UserRepository {
 		}
 	}
 
-	async findAllUsers() {
+	async findAllUsers(search?: { name: string }) {
 		try {
-			const response = await UserModel.find({}, { id: false, password: false })
+			let query: any = {}
+			if (search?.name) {
+				query.username = { $regex: search.name, $options: "i" }
+			}
+			const response = await UserModel.find(query, { id: false, password: false })
 			return {
 				success: true,
 				message: "fetched all users",

@@ -8,9 +8,10 @@ class AdminUsecase {
 		this.userRepository = userRepository
 	}
 
-	async getAllUsers() {
+	async getAllUsers(search?: { name: string }) {
 		try {
-			const response = await this.userRepository.findAllUsers()
+			console.log(search)
+			const response = await this.userRepository.findAllUsers(search)
 			return {
 				status: response.success ? 200 : 500,
 				data: {

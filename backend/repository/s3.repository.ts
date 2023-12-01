@@ -9,12 +9,12 @@ class S3Repository {
 				accessKeyId: process.env.AWS_ACCESS as string,
 				secretAccessKey: process.env.AWS_SECRET as string
 			},
-			region : "ap-south-1"
+			region: "ap-south-1"
 		})
 	}
 
 	async upload() {
-		 
+		
 	}
 	async get() { }
 }

@@ -34,8 +34,9 @@ class UserUsecase {
 		}
 	}
 
-	async edit(user: IUser) {
+	async edit(user: IUser, file?:Express.Multer.File ) {
 		try {
+			console.log(file)
 			const response = await this.userRepository.update(user)
 			return {
 				status: response.success ? 200 : 500,
