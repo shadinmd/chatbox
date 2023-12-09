@@ -7,7 +7,6 @@ import { AppDispatch } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import authSlice from "@/redux/features/auth/authSlice";
 import { getUser } from "@/redux/features/user/userActions";
-import socket from "@/services/socket";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 
