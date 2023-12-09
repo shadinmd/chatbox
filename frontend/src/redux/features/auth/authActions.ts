@@ -6,7 +6,7 @@ import { toast } from "sonner"
 
 export const login = createAsyncThunk(
 	"auth/login",
-	async (data: loginFormType) => {
+	async (data: loginFormType, { rejectWithValue }) => {
 		try {
 			const response = await Api.post("/auth/login", data)
 			if (response.data.success) {
@@ -23,6 +23,7 @@ export const login = createAsyncThunk(
 			} else {
 				console.log(error)
 			}
+			return rejectWithValue("error on login")
 		}
 	}
 )
@@ -46,6 +47,7 @@ export const register = createAsyncThunk(
 				console.log(error)
 			}
 		}
+		return rejectWithValue("error on registering")
 	}
 )
 

@@ -13,7 +13,8 @@ const config: Config = {
 				"chat-blue": "#397FFF",
 				"chat-red": "#FF3E3E",
 				"chat-green": "#3AFF1A",
-				"chat-yellow": "#FFE923"
+				"chat-yellow": "#FFE923",
+				"chat-violet": "#BD00FF"
 			}
 		},
 	},

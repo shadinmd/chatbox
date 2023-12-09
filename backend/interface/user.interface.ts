@@ -9,7 +9,8 @@ interface IUser {
 	admin?: boolean,
 	active?: boolean,
 	verified?: boolean,
-	frieds?: string[],
+	blocked?: [],
+	friends?: string[],
 	settings?: {
 		theme?: "DARK" | "LIGHT",
 		icons?: {

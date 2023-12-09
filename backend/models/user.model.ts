@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
-import IUser from "../interface/user";
+import IUser from "../interface/user.interface";
 
 const userSchema = new mongoose.Schema<IUser>({
 	username: {
 		type: String,
 		required: true,
+		unique: true
 	},
 	id: {
 		type: String,
@@ -33,6 +34,11 @@ const userSchema = new mongoose.Schema<IUser>({
 	},
 	image: {
 		type: String
+	},
+	friends: {
+		type: Array<String>,
+		default: [],
+		ref : "User"
 	},
 	verified: {
 		type: Boolean,

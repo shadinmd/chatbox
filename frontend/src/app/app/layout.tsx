@@ -7,6 +7,7 @@ import { AppDispatch } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import authSlice from "@/redux/features/auth/authSlice";
 import { getUser } from "@/redux/features/user/userActions";
+import socket from "@/services/socket";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 
@@ -14,12 +15,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 	const dispatch: AppDispatch = useDispatch()
 
 	useEffect(() => {
-		if (localStorage.getItem("token")) {
-			dispatch(authSlice.actions.setLoggedIn(true))
-			dispatch(getUser())
-		} else {
-			router.push("/app/login")
-		}
+		
 	}, [])
 
 	return (

@@ -1,14 +1,31 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { editUser, getUser } from "./userActions";
 
-const initialState = {
+interface initialStateType {
+	user: {
+		username: string,
+		email: string,
+		_id: string,
+		bio: string,
+		admin: boolean,
+		verified: boolean,
+		friends: any[],
+		blocked: any[]
+	},
+	loading: boolean,
+	error: boolean
+}
+
+const initialState: initialStateType = {
 	user: {
 		username: "",
 		email: "",
 		_id: "",
 		bio: "",
 		admin: false,
-		verified: false
+		verified: false,
+		friends: [],
+		blocked: []
 	},
 	loading: false,
 	error: false

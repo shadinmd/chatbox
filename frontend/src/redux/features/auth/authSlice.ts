@@ -30,7 +30,8 @@ const authSlice = createSlice({
 			state.loading = false
 			state.error = false
 			state.loggedIn = true
-			localStorage.setItem("token", payload.token)
+			if (payload.success)
+				localStorage.setItem("token", payload.token)
 		})
 
 		builder.addCase(login.rejected, (state) => {

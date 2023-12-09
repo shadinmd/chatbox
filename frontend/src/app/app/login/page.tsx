@@ -30,7 +30,8 @@ const Login = () => {
 		const response = await dispatch(authActions.login(data))
 		if (isFulfilled(response)) {
 			router.push("/app/chat")
-			dispatch(getUser())
+			router.refresh()
+			// dispatch(getUser())
 		}
 	}
 

@@ -58,7 +58,6 @@ const users = () => {
 
 	return (
 		<Container className="w-full gap-2 bg-black flex items-center"  >
-			<AdminSideBar />
 			<Container className="flex-col items-center gap-5 py-5 justify-center">
 				<h1 className="text-3xl font-bold text-left w-full px-10">Users</h1>
 				<div className="flex justify-center items-center w-full px-10">

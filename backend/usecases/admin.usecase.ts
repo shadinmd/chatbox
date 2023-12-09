@@ -1,4 +1,4 @@
-import IUser from "../interface/user"
+import IUser from "../interface/user.interface"
 import UserRepository from "../repository/user.repository"
 
 class AdminUsecase {

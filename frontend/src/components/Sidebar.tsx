@@ -21,10 +21,13 @@ const Sidebar = () => {
 				<Link href="/app/chat">
 					<Icon className="text-chat-green h-9 w-9" icon={"mdi:chat"}></Icon>
 				</Link>
-				<Link href="/app/search">
-					<Icon className="text-chat-green h-9 w-10" icon="ic:round-search" />
+				<Link href="/app/call">
+					<Icon className="text-chat-violet h-9 w-10" icon="solar:phone-bold" />
 				</Link>
-				<Link href="/app/settings">
+				<Link href="/app/search">
+					<Icon className="text-chat-green h-9 w-10" icon="ion:person-add" />
+				</Link>
+				<Link href="/app/settings/account">
 					<Icon className="text-chat-blue h-9 w-9" icon={"mdi:gear"}></Icon>
 				</Link>
 				{

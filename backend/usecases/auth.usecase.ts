@@ -49,7 +49,7 @@ class AuthUsecase {
 				data: {
 					success: response.success,
 					message: response.message,
-					token: ''
+					token: " "
 				}
 			}
 			if (!response.success) {
@@ -60,6 +60,7 @@ class AuthUsecase {
 				result.status = 500
 				result.data.success = false
 				result.data.message = "incorrect email or password"
+				return result
 			}
 
 			const token = jwt.sign(String(response.user?._id), process.env.JWT_SECRET as string)

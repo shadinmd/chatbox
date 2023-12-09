@@ -1,4 +1,4 @@
-import IUser from "../interface/user"
+import IUser from "../interface/user.interface"
 import UserModel from "../models/user.model"
 
 class UserRepository {
@@ -20,6 +20,21 @@ class UserRepository {
 					message: `${field} all ready in use`
 				}
 			}
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
+
+	async addFriend(id: string, friendId: string) {
+		try {
+			const response = await UserModel.updateOne({ _id: id }, { $addToSet: { friends: friendId } })
+			return {
+				success: true,
+				message: "friend added"
+			}
+		} catch (error) {
 			return {
 				success: false,
 				message: "database error"
@@ -57,6 +72,12 @@ class UserRepository {
 	async findByEmail(email: string) {
 		try {
 			const response = await UserModel.findOne({ email })
+			if (!response) {
+				return {
+					success: false,
+					message: "email not found",
+				}
+			}
 			return {
 				success: true,
 				message: "user found",
@@ -72,7 +93,7 @@ class UserRepository {
 
 	async findById(id: string) {
 		try {
-			const response = await UserModel.findOne({ _id: id }, { password: false })
+			const response = await UserModel.findOne({ _id: id }, { password: false }).populate({path: "friends", select : "-password"})
 			return {
 				success: true,
 				message: "fetched user",

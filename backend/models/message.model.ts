@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import IMessage from "../interface/message";
+import IMessage from "../interface/message.interface";
 
 const messageSchema = new mongoose.Schema<IMessage>({
 	sender: {
@@ -19,10 +19,11 @@ const messageSchema = new mongoose.Schema<IMessage>({
 	},
 	type: {
 		type: String,
-	enum: ["FILE", "AUDIO", "TEXT"]
+		enum: ["FILE", "AUDIO", "TEXT"]
 	},
 	file: {
 		type: String,
+		ref : "File"
 	}
 }, { timestamps: true })
 

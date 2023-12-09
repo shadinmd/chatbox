@@ -1,11 +1,13 @@
 "use client";
 import Container from "@/components/Container"
+import AdminSideBar from "@/components/admin/Sidebar";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 
 	return (
-		<Container className="flex bg-black">
-				{children}
+		<Container className="flex ">
+			<AdminSideBar />
+			{children}
 		</Container>
 	)
 }
