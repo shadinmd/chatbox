@@ -31,4 +31,4 @@ jobs:
 
         - name: start new server
           working-directory: ./backend
-          run: pm2 start --interpreter=/home/admin/.nvm/versions/node/v20.9.0/bin/ts-node main.ts --name chatbox-server
+          run: pm2 start --interpreter=/home/admin/.nvm/versions/node/v21.5.0/bin/ts-node main.ts --name chatbox-server
