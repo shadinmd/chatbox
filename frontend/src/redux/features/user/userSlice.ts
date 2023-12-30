@@ -9,6 +9,7 @@ interface initialStateType {
 		bio: string,
 		admin: boolean,
 		verified: boolean,
+		image: string,
 		friends: any[],
 		blocked: any[]
 	},
@@ -22,6 +23,7 @@ const initialState: initialStateType = {
 		email: "",
 		_id: "",
 		bio: "",
+		image: "",
 		admin: false,
 		verified: false,
 		friends: [],

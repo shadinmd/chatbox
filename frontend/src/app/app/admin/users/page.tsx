@@ -67,9 +67,6 @@ const users = () => {
 						onChange={((e) => setSearch(e.target.value))}
 						className="px-2 py-1 w-full text-white bg-chat-black border-chat-blue border rounded-lg"
 					/>
-					<button type="button">
-						<Icon className="text-chat-green text-5xl p-2" icon="ic:baseline-plus" />
-					</button>
 				</div>
 				<div className="flex flex-col gap-2 w-full px-10 font-bold items-center justify-start h-5/6">
 					{

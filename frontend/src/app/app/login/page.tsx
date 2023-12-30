@@ -1,15 +1,18 @@
 "use client";
 import loginFormSchema from "@/models/loginFormSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import Link from "next/link";
 import { useForm } from "react-hook-form"
 import { useDispatch } from "react-redux";
 import { z } from "zod"
-import authActions from "@/redux/features/auth/authActions"
-import { AppDispatch } from "@/redux/store";
-import { isFulfilled } from "@reduxjs/toolkit";
+import { AppDispatch, RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
+import { isAxiosError } from "axios";
+import { toast } from "sonner";
+import Api from "@/services/Api";
+import Link from "next/link";
+import authSlice from "@/redux/features/auth/authSlice";
 import { getUser } from "@/redux/features/user/userActions";
+import { useSelector } from "react-redux";
 
 type className = string
 type formType = z.infer<typeof loginFormSchema>
@@ -18,8 +21,11 @@ const inputStyle: className = "rounded-lg text-black px-2 py-2 focus:outline-non
 const errorMessageStyle: className = "text-red-500"
 
 const Login = () => {
+
 	const dispatch: AppDispatch = useDispatch()
 	const router = useRouter()
+	const socket = useSelector((state: RootState) => state.socket.socket)
+
 	const {
 		register,
 		handleSubmit,
@@ -27,13 +33,32 @@ const Login = () => {
 	} = useForm<formType>({ resolver: zodResolver(loginFormSchema) })
 
 	const submit = async (data: formType) => {
-		const response = await dispatch(authActions.login(data))
-		if (isFulfilled(response)) {
-			router.push("/app/chat")
-			router.refresh()
-			// dispatch(getUser())
+		try {
+			const response = await Api.post("/auth/login", data)
+			if (response.data.success) {
+				console.log(response.data)
+				localStorage.setItem("token", response?.data?.token)
+				localStorage.setItem("email", data.email)
+				dispatch(authSlice.actions.setLoggedIn(true))
+				const { payload } = await dispatch(getUser())
+				console.log(payload)
+				socket?.emit("initiate", { id: payload._id })
+				router.push("/app/chat")
+			} else {
+				toast.error(response.data.message)
+			}
+		} catch (error) {
+			if (isAxiosError(error)) {
+				if (error.response?.data.message)
+					toast.error(error.response.data.message)
+				else
+					toast.error(error.message)
+			} else {
+				console.log(error)
+			}
 		}
 	}
+
 
 	return (
 		<div className="flex flex-col gap-7 items-center justify-center h-full w-full bg-chat-black text-white rounded-3xl">

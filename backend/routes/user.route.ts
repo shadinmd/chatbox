@@ -2,14 +2,16 @@ import express, { Request, Response } from "express"
 import UserUsecase from "../usecases/user.usecase"
 import UserRepository from "../repository/user.repository"
 import UserController from "../controllers/user.controller"
-import authorizationMiddleware from "../middlewares/authorizatoin.middleware"
+import authorizationMiddleware from "../middlewares/authorization.middleware"
 import upload from "../middlewares/upload.middleware"
 import S3Repository from "../repository/s3.repository"
+import JwtRepository from "../repository/jwt.repository"
 const router = express.Router()
 
 const userRepository = new UserRepository()
 const s3Repositroy = new S3Repository()
-const userUsecase = new UserUsecase(userRepository, s3Repositroy)
+const jwtRepository = new JwtRepository()
+const userUsecase = new UserUsecase(userRepository, s3Repositroy, jwtRepository)
 const userController = new UserController(userUsecase)
 
 router.route("/")

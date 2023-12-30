@@ -38,11 +38,14 @@ const userSchema = new mongoose.Schema<IUser>({
 	friends: {
 		type: Array<String>,
 		default: [],
-		ref : "User"
+		ref: "User"
 	},
 	verified: {
 		type: Boolean,
 		default: false
+	},
+	verificationToken: {
+		type: String
 	}
 }, { timestamps: true })
 

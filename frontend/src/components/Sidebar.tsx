@@ -21,7 +21,7 @@ const Sidebar = () => {
 				<Link href="/app/chat">
 					<Icon className="text-chat-green h-9 w-9" icon={"mdi:chat"}></Icon>
 				</Link>
-				<Link href="/app/call">
+				<Link href="/app/calls">
 					<Icon className="text-chat-violet h-9 w-10" icon="solar:phone-bold" />
 				</Link>
 				<Link href="/app/search">

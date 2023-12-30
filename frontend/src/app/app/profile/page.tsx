@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod";
 import profileFormSchema from "@/models/profileFormSchema";
 import { z } from "zod";
+import { Icon } from "@iconify/react"
 
 type className = string
 type formType = z.infer<typeof profileFormSchema>
@@ -22,7 +23,6 @@ const Profile = () => {
 
 	useEffect(() => {
 		(async () => {
-			console.log(user)
 			setValue("username", user.user.username)
 			setValue("email", user.user.email)
 			setValue("bio", user.user.bio)
@@ -61,12 +61,26 @@ const Profile = () => {
 					<div>
 						loading
 					</div> :
-					<>
-						<form onSubmit={submitProfile}>
+					<div className="flex gap-10 items-center justify-center">
+						<form onSubmit={submitProfile} className="flex gap-10">
+							<label htmlFor="select-image" className="h-60 w-60 rounded-full object-cover object-center">
+								{
+									file ?
+										<img src={URL.createObjectURL(file)} className="h-full w-full rounded-full object-cover object-center" alt="" />
+										: user.user.image ?
+											<img src={user.user.image} className="h-full w-full rounded-full object-cover object-center" alt="" />
+											:
+											<div className="flex items-center justify-center h-full w-full rounded-full object-cover object-center bg-white">
+												<Icon icon="mdi:camera" className="text-black text-5xl" />
+											</div>
+								}
+							</label>
 							<input
 								type="file"
 								name="image"
+								id="select-image"
 								className={inputStyle}
+								hidden={true}
 								onChange={(e) => {
 									if (e.target.files && e.target?.files?.length > 0) {
 										setFile(e.target.files[0])
@@ -107,7 +121,7 @@ const Profile = () => {
 								Save
 							</button>
 						</form>
-					</>
+					</div>
 			}
 		</Container>
 	)

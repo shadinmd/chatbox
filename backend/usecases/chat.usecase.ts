@@ -6,6 +6,7 @@ class ChatUsecase {
 	private messageRepository: MessageRepository
 	private requestRepository: RequestRepositroy
 
+
 	constructor(messageRepository: MessageRepository, requestRepository: RequestRepositroy) {
 		this.messageRepository = messageRepository
 		this.requestRepository = requestRepository
@@ -36,13 +37,36 @@ class ChatUsecase {
 
 	async getAllMessages(id: string) {
 		try {
-			const response = await this.messageRepository.getMessages(id)
+			const response = await this.messageRepository.getAllMessages(id)
 			return {
 				status: response.success ? 200 : 500,
 				data: {
 					success: response.success,
 					message: response.message,
 					messages: response.messages
+				}
+			}
+		} catch (error) {
+			console.log(error)
+			return {
+				status: 500,
+				data: {
+					success: false,
+					message: "server error"
+				}
+			}
+		}
+	}
+
+	async getConversation(id: string, friend: string) {
+		try {
+			const response = await this.messageRepository.getConversation(id, friend)
+			return {
+				status: response.success ? 200 : 500,
+				data: {
+					success: response.success,
+					message: response.message,
+					conversation: response.conversation || []
 				}
 			}
 		} catch (error) {

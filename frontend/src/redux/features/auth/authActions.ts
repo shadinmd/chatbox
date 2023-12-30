@@ -9,21 +9,24 @@ export const login = createAsyncThunk(
 	async (data: loginFormType, { rejectWithValue }) => {
 		try {
 			const response = await Api.post("/auth/login", data)
+			console.log(response.data)
 			if (response.data.success) {
 				return response.data
 			} else {
 				toast.error(response.data.message)
+				return rejectWithValue("login failed")
 			}
 		} catch (error) {
 			if (isAxiosError(error)) {
-				if (error.response?.data.message)
+				if (error?.response?.data?.message) {
 					toast.error(error.response.data.message)
-				else
+				} else {
 					toast.error(error.message)
+				}
 			} else {
 				console.log(error)
+				return rejectWithValue("login failed")
 			}
-			return rejectWithValue("error on login")
 		}
 	}
 )
@@ -48,6 +51,30 @@ export const register = createAsyncThunk(
 			}
 		}
 		return rejectWithValue("error on registering")
+	}
+)
+
+export const verify = createAsyncThunk(
+	"auth/verify",
+	async ({ email, token }: { email: string, token: string }, { rejectWithValue }) => {
+		try {
+			const { data } = await Api.put("/verify", { email, token })
+			if (data.success) {
+				return data.success
+			} else {
+				toast.error(data.message)
+			}
+		} catch (error) {
+			if (isAxiosError(error)) {
+				if (error.response?.data.message)
+					toast.error(error.response.data.message)
+				else
+					toast.error(error.message)
+			} else {
+				console.log(error)
+			}
+			return rejectWithValue("error trying to verify")
+		}
 	}
 )
 

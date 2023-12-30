@@ -20,6 +20,7 @@ interface IUser {
 			home?: string
 		}
 	}
+	verificationToken?: string
 }
 
 export default IUser

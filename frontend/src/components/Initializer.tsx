@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import socketSlice from "@/redux/features/socket/socketSlice";
 import { getAllMessages, getRequests } from "@/redux/features/chat/chatActions";
 import { toast } from "sonner";
+import { isFulfilled } from "@reduxjs/toolkit";
 
 const Initializer = ({ children }: { children: React.ReactNode }) => {
 
@@ -34,25 +35,28 @@ const Initializer = ({ children }: { children: React.ReactNode }) => {
 	}, [])
 
 	useEffect(() => {
-		if (auth) {
-			dispatch(getUser())
-			dispatch(getRequests())
-			dispatch(getAllMessages())
+		(async () => {
+			if (auth) {
+				dispatch(getRequests())
+				dispatch(getAllMessages())
+				dispatch(getUser())
 
-			socket?.socket?.on("noti:recieve", (data) => {
-				if (data.status = "success")
-					toast.success(data.message, {position : "top-right"})
-			})
+				socket?.socket?.on("noti:recieve", (data) => {
+					if (data.status == "success")
+						toast("message", { description: data.message, position: "top-right" })
+				})
 
-			socket?.socket?.on("connect", () => {
-				console.log("connected")
-			})
-		}
+				socket?.socket?.on("connect", async () => {
+					console.log("connected")
+					// socket.socket?.emit("initiate", { id: user._id })
+				})
+			}
+		})()
 	}, [socket, auth])
 
 	useEffect(() => {
-		if (auth && user?._id && !initialized && socket.socket) {
-			socket.socket.emit("initiate", { id: user._id })
+		if (auth && user?._id && !initialized) {
+			socket.socket!.emit("initiate", { id: user._id })
 			setInitializer(true)
 		}
 	}, [user])

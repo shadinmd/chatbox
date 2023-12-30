@@ -13,6 +13,7 @@ class AuthController {
 			const response = await this.authUsecase.login(email, password)
 			res.status(response.status).send(response.data)
 		} catch (error) {
+			console.log(error)
 			return {
 				status: 500,
 				data: {
@@ -39,12 +40,13 @@ class AuthController {
 		}
 	}
 
-	async getOtp(req: Request, res: Response) {
+	async sendVerificationMail(req: Request, res: Response) {
 		try {
-			const { id } = req.body
-			const response = await this.authUsecase.createOtp(id)
+			const { email } = req.body
+			const response = await this.authUsecase.sendVerificationMail(email)
 			res.status(response.status).send(response.data)
 		} catch (error) {
+			console.log(error)
 			return {
 				status: 500,
 				data: {
@@ -55,10 +57,10 @@ class AuthController {
 		}
 	}
 
-	async verifyOtp(req: Request, res: Response) {
+	async verifyEMail(req: Request, res: Response) {
 		try {
-			const { otp, id } = req.body
-			const response = await this.authUsecase.verifyOtp(otp, id)
+			const { email, token } = req.body
+			const response = await this.authUsecase.verifyEmail(token, email)
 			res.status(response.status).send(response.data)
 		} catch (error) {
 			return {

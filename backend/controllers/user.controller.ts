@@ -54,7 +54,10 @@ class UserController {
 	async edit(req: Request, res: Response) {
 		try {
 			const { username, email, _id, bio } = req.body
-			const response = await this.userUsecase.edit({ username, email, _id, bio }, req.file)
+			const response = await this.userUsecase.edit(
+				{ username, email, _id, bio }
+				, req.file
+			)
 			res.status(response.status).send(response.data)
 		} catch (error) {
 			console.log(error)

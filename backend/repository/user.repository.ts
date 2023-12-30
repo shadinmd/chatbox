@@ -51,7 +51,8 @@ class UserRepository {
 					bio: user.bio,
 					username: user.username,
 					admin: user.admin,
-					active: user.active
+					active: user.active,
+					image: user.image
 				}
 			}, { new: true })
 
@@ -73,9 +74,10 @@ class UserRepository {
 		try {
 			const response = await UserModel.findOne({ email })
 			if (!response) {
+				console.log("no user found")
 				return {
 					success: false,
-					message: "email not found",
+					message: "user not found",
 				}
 			}
 			return {
@@ -84,6 +86,7 @@ class UserRepository {
 				user: response
 			}
 		} catch (error) {
+			console.log(error)
 			return {
 				success: false,
 				message: "database error"
@@ -93,7 +96,7 @@ class UserRepository {
 
 	async findById(id: string) {
 		try {
-			const response = await UserModel.findOne({ _id: id }, { password: false }).populate({path: "friends", select : "-password"})
+			const response = await UserModel.findOne({ _id: id }, { password: false }).populate({ path: "friends", select: "-password" })
 			return {
 				success: true,
 				message: "fetched user",
@@ -119,6 +122,40 @@ class UserRepository {
 				success: true,
 				message: "fetched all users",
 				users: response
+			}
+		} catch (error) {
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
+
+	async getVerificationToken(email: string) {
+		try {
+			const response = await UserModel.findOne({ email }, { verificationToken: 1, _id: 0, email: 1 })
+			return {
+				success: true,
+				message: "token fetched",
+				token: response?.verificationToken,
+				email: response?.email
+			}
+		} catch (error) {
+			console.log(error)
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
+
+	async verifyEmail(token: string, email: string) {
+		try {
+			const response = await UserModel.findOneAndUpdate({ email, verificationToken: token }, { $set: { verified: true }, /* $unset: { verificationToken: 1 }  */ })
+			return {
+				success: true,
+				message: "fetched user token",
+				token: response?.verificationToken
 			}
 		} catch (error) {
 			return {

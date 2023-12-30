@@ -53,14 +53,15 @@ const Search = () => {
 			<div className="w-full h-5/6 max-h-full grid grid-cols-4 grid-rows-3 gap-2 p-2 overflow-y-auto">
 				{
 					users &&
-					users.map((e) => (
+					users.map((e, i) => (
 						<Link
+							key={i}
 							href={`/app/user/${e._id}`}
 							className="bg-black rounded-lg w-full h-72 flex flex-col gap-2 p-2 items-center justify-center"
 						>
 							{
 								e.image ?
-									<img src="" className="h-full w-full rounded-lg" alt="" /> :
+									<img src={e.image} className="h-56 w-56 rounded-lg" alt="" /> :
 									<div className="h-full w-full rounded-lg bg-white"></div>
 							}
 							<p className="text-lg font-bold text-left w-full">{e.username}</p>

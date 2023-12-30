@@ -155,7 +155,7 @@ const User = ({ params }: { params: { id: string } }) => {
 						</div>
 
 						<div className="w-full flex justify-between gap-2">
-							<label>admin: </label>
+							<label>type: </label>
 							<p>{user.admin ? "admin" : "user"}</p>
 						</div>
 

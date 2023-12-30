@@ -1,27 +1,43 @@
 import UserRepository from "../repository/user.repository";
 import BcryptRepository from "../repository/bcrypt.repository"
 import UuidRepository from "../repository/uuid.repository";
-import jwt from "jsonwebtoken"
-import OtpRepository from "../repository/otp.repository";
+import CryptoRepositor from "../repository/crypto.repository"
+import JwtRepository from "../repository/jwt.repository";
+import CryptoRepository from "../repository/crypto.repository";
+import MailRepository from "../repository/mail.repository"
 
 class AuthUsecase {
 	private userRepository: UserRepository
 	private bcryptRepostiroy: BcryptRepository
 	private uuidRepository: UuidRepository
-	private otpRepository: OtpRepository
+	private jwtRepository: JwtRepository
+	private cryptoRepository: CryptoRepositor
+	private mailRepository: MailRepository
 
-	constructor(userRepository: UserRepository, bcryptRepostiroy: BcryptRepository, uuidRepository: UuidRepository, otpRepository: OtpRepository) {
+	constructor(
+		userRepository: UserRepository,
+		bcryptRepostiroy: BcryptRepository,
+		uuidRepository: UuidRepository,
+		jwtRepository: JwtRepository,
+		cryptoRepository: CryptoRepository,
+		mailRepository: MailRepository
+	) {
+
 		this.userRepository = userRepository
 		this.bcryptRepostiroy = bcryptRepostiroy
 		this.uuidRepository = uuidRepository
-		this.otpRepository = otpRepository
+		this.jwtRepository = jwtRepository
+		this.cryptoRepository = cryptoRepository
+		this.mailRepository = mailRepository
+
 	}
 
 	async register(data: { email: string, username: string, password: string }) {
 		try {
 			const id = this.uuidRepository.generateId()
 			const hashedPassword = this.bcryptRepostiroy.hash(data.password)
-			const response = await this.userRepository.create({ ...data, id, password: hashedPassword })
+			const verificationToken = this.cryptoRepository.generateVerificationToken()
+			const response = await this.userRepository.create({ ...data, id, password: hashedPassword, verificationToken })
 			return {
 				status: response.success ? 200 : 500,
 				data: {
@@ -49,7 +65,7 @@ class AuthUsecase {
 				data: {
 					success: response.success,
 					message: response.message,
-					token: " "
+					token: ""
 				}
 			}
 			if (!response.success) {
@@ -63,7 +79,7 @@ class AuthUsecase {
 				return result
 			}
 
-			const token = jwt.sign(String(response.user?._id), process.env.JWT_SECRET as string)
+			const token = this.jwtRepository.hash(String(response.user?._id))
 			result.data.token = token!
 
 			return result
@@ -79,18 +95,46 @@ class AuthUsecase {
 		}
 	}
 
-	async createOtp(id: string) {
+	async sendVerificationMail(email: string) {
 		try {
-			const otp = Math.floor(Math.random() * 900000)
-			const response = await this.otpRepository.create(otp.toString(), id)
-			return {
-				status: response.success ? 200 : 500,
-				data: {
-					success: response.success,
-					message: response.message
+			console.log(email)
+			const response = await this.userRepository.getVerificationToken(email)
+			if (response.success && response.email && response.token) {
+				await this.mailRepository.sendVerificationMail(response?.email, `${process.env.FRONTEND_URL}/verify?token=${response.token}&email=${response.email}`)
+				return {
+					status: 200,
+					data: {
+						success: true,
+						message: "mail sent successfully"
+					}
+				}
+			} else if (!response.email) {
+				return {
+					status: 500,
+					data: {
+						success: false,
+						message: "email to provided"
+					}
+				}
+			} else if (!response.token) {
+				return {
+					status: 500,
+					data: {
+						success: false,
+						message: "failed to fetch user token"
+					}
+				}
+			} else {
+				return {
+					status: 500,
+					data: {
+						success: false,
+						message: "database error"
+					}
 				}
 			}
 		} catch (error) {
+			console.log(error)
 			return {
 				status: 500,
 				data: {
@@ -101,34 +145,14 @@ class AuthUsecase {
 		}
 	}
 
-	async verifyOtp(otp: string, id: string) {
+	async verifyEmail(token: string, email: string) {
 		try {
-			const response = await this.otpRepository.searchById(id)
-			if (response.success) {
-				if (otp == response.otp?.otp) {
-					this.userRepository.update({ id, verified: true })
-					return {
-						status: 200,
-						data: {
-							success: response.success,
-							message: response.message
-						}
-					}
-				} else {
-					return {
-						status: 400,
-						data: {
-							success: false,
-							message: "invalid/incorrect otp"
-						}
-					}
-				}
-			} else {
-				return {
-					status: 500,
-					data: {
-						...response
-					}
+			const response = await this.userRepository.verifyEmail(token, email)
+			return {
+				status: response.success ? 200 : 500,
+				data: {
+					success: response.success,
+					message: response.message
 				}
 			}
 		} catch (error) {

@@ -28,9 +28,10 @@ const Register = () => {
 	} = useForm<registeFormType>({ resolver: zodResolver(registerFormSchema) })
 
 	const submit = async (data: registeFormType) => {
+		localStorage.setItem("email", data.email)
 		const response = await dispatch(authActions.register({ password: data.password, email: data.email, username: data.username }))
 		if (isFulfilled(response)) {
-			router.push("/app/login")
+			router.push("/verify")
 		}
 	}
 

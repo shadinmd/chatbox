@@ -36,7 +36,7 @@ export const getAllMessages = createAsyncThunk(
             const { data } = await Api.get("/chat/")
             if (data.success) {
                 console.log(data.messages)
-                return data.messages
+                return data.messages || []
             } else {
                 toast.error(data.message)
                 return rejectWithValue({})
