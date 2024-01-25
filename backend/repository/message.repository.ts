@@ -34,17 +34,11 @@ class MessageRepository {
 
 	async getAllMessages(id: string) {
 		try {
-			const response = await MessageModel.find({
-				$or: [
-					{ sender: id },
-					{ reciever: id }
-				]
-			}).populate("file")
-
+			const messages = await MessageModel.find({ chat: id }).populate("file")
 			return {
 				success: true,
 				message: "fetched messages",
-				messages: response
+				messages
 			}
 		} catch (error) {
 			return {

@@ -1,9 +1,17 @@
 import axios, { isAxiosError } from "axios";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 
-const Api = axios.create({ baseURL: process.env.NEXT_PUBLIC_API })
+const Api = axios.create({
+	baseURL: process.env.NEXT_PUBLIC_API
+})
+
+Api.interceptors.request.use((request) => {
+	if (localStorage.getItem("token")) {
+		request.headers.authorization = localStorage.getItem("token")
+	}
+	return request
+})
 
 Api.interceptors.response.use(
 	(e) => {
@@ -17,6 +25,9 @@ Api.interceptors.response.use(
 				window.location.assign("/app/login")
 			} else if (error?.response?.data?.error == "verification") {
 				window.location.assign("/verify")
+			} else if (error.response?.data.error == "invalidtoken") {
+				localStorage.removeItem("token")
+				window.location.assign("/app/login")
 			}
 			else {
 				return Promise.reject(error)
@@ -27,14 +38,5 @@ Api.interceptors.response.use(
 		}
 	}
 )
-
-Api.interceptors.request.use((e) => {
-
-	if (localStorage.getItem("token")) {
-		e.headers.Authorization = localStorage.getItem("token")
-	}
-
-	return e
-})
 
 export default Api

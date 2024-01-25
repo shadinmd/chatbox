@@ -7,11 +7,6 @@ const userSchema = new mongoose.Schema<IUser>({
 		required: true,
 		unique: true
 	},
-	id: {
-		type: String,
-		required: true,
-		unique: true
-	},
 	email: {
 		type: String,
 		required: true,
@@ -39,6 +34,13 @@ const userSchema = new mongoose.Schema<IUser>({
 		type: Array<String>,
 		default: [],
 		ref: "User"
+	},
+	online: {
+		type: Boolean,
+		default: false
+	},
+	lastOnline: {
+		type: Date
 	},
 	verified: {
 		type: Boolean,

@@ -9,7 +9,6 @@ export const getUser = createAsyncThunk(
 		try {
 			const response = await Api.get("/user")
 			if (response.data.success) {
-				console.log(response.data)
 				return response.data.user
 			} else {
 				toast.error(response.data.message)
@@ -33,8 +32,8 @@ export const editUser = createAsyncThunk(
 		try {
 			console.log(data._id)
 			const response = await Api.put("/user/", data, {
-				headers : {
-					"Content-Type" : "multipart/form-data"
+				headers: {
+					"Content-Type": "multipart/form-data"
 				}
 			})
 			if (response.data.success) {

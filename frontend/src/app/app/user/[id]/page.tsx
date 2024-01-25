@@ -1,21 +1,24 @@
 "use client";
 import Container from "@/components/Container";
-import { RootState } from "@/redux/store";
+import chatSlice from "@/redux/features/chat/chatSlice";
+import { AppDispatch, RootState } from "@/redux/store";
 import Api from "@/services/Api";
 import { Icon } from "@iconify/react"
 import { isAxiosError } from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PuffLoader } from "react-spinners";
 import { toast } from "sonner";
 
 const User = ({ params }: { params: { id: string } }) => {
 	const [user, setUser] = useState<any>()
 	const [friend, setFriend] = useState(false)
-	const currentUser = useSelector((state: RootState) => state.user.user)
 	const [loading, setLoading] = useState(true)
 	const [request, setRequest] = useState(false)
+
+	const dispatch: AppDispatch = useDispatch()
+	const currentUser = useSelector((state: RootState) => state.user.user)
 	const socket = useSelector((state: RootState) => state.socket.socket)
 	const requests = useSelector((state: RootState) => state.chat.requests)
 
@@ -44,18 +47,18 @@ const User = ({ params }: { params: { id: string } }) => {
 	}, [])
 
 	useEffect(() => {
-		if (currentUser.friends.some((e) => e._id == params.id)) {
+		if (currentUser.friends.find((e) => e._id == params.id)) {
 			setFriend(true)
 		}
-		else if (requests.some((e) => e.sender._id == params.id)) {
-			setRequest(true)
-		}
-	}, [requests])
+	}, [])
 
 	const Request = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		try {
 			e.preventDefault()
-			socket?.emit("chat:request", { id: params.id })
+			const data = { to: params.id, sender: currentUser, status: "WAITING" }
+			socket?.emit("chat:friend:request", data)
+			dispatch(chatSlice.actions.appendRequest({ reciever: params.id, sender: currentUser, status: "WAITING" }))
+			toast.success("request send")
 			console.log("request send to ", params.id)
 		} catch (error) {
 			console.log(error)
@@ -65,7 +68,7 @@ const User = ({ params }: { params: { id: string } }) => {
 	const accept = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		try {
 			e.preventDefault()
-			socket?.emit("chat:accept", { id: params.id })
+			socket?.emit("chat:friend:accept", { id: params.id, user: currentUser._id, username: currentUser.username })
 		} catch (error) {
 			console.log(error)
 		}
@@ -73,7 +76,7 @@ const User = ({ params }: { params: { id: string } }) => {
 
 	const Block = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		try {
-			socket?.emit("chat:block", { id: params.id })
+			socket?.emit("chat:friend:block", { id: params.id })
 		} catch (error) {
 			console.log(error)
 		}
@@ -90,7 +93,7 @@ const User = ({ params }: { params: { id: string } }) => {
 					<div className="rounded-full bg-white h-40 w-40">
 						{
 							user.image &&
-							<img src="" className="w-full h-full" alt="" />
+							<img src={user.image} className="w-full h-full rounded-full" alt="" />
 						}
 					</div>
 					<div className="flex flex-col items-center justify-center gap-2">
@@ -103,7 +106,7 @@ const User = ({ params }: { params: { id: string } }) => {
 						<div className="flex gap-5 items-center justify-center font-bold">
 							{
 								friend ?
-									<Link className="px-4 py-2 rounded-lg bg-chat-green" href={`/app/chat/${params.id}`}>
+									<Link className="px-4 py-2 rounded-lg bg-chat-green" href={`/app/chat/`}>
 										Message
 									</Link>
 									:

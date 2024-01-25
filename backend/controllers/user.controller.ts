@@ -53,6 +53,7 @@ class UserController {
 
 	async edit(req: Request, res: Response) {
 		try {
+			// take id from authorization token
 			const { username, email, _id, bio } = req.body
 			const response = await this.userUsecase.edit(
 				{ username, email, _id, bio }

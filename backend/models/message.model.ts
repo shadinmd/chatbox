@@ -4,11 +4,13 @@ import IMessage from "../interface/message.interface";
 const messageSchema = new mongoose.Schema<IMessage>({
 	sender: {
 		type: String,
-		required: true
+		required: true,
+		ref: "User"
 	},
-	reciever: {
+	chat: {
 		type: String,
-		required: true
+		required: true,
+		ref: "Chat"
 	},
 	read: {
 		type: Boolean,
@@ -23,7 +25,7 @@ const messageSchema = new mongoose.Schema<IMessage>({
 	},
 	file: {
 		type: String,
-		ref : "File"
+		ref: "File"
 	}
 }, { timestamps: true })
 

@@ -5,7 +5,7 @@ const loginFormSchema = z.object({
 		.email("Enter a valid email")
 		.refine((e) => !/\s/.test(e), { message: "username cannot contain spaces" })
 	,
-	password: z.string()
+	password: z.string().min(1, { message: "please enter this filed" })
 })
 
 export type loginFormType = z.infer<typeof loginFormSchema>

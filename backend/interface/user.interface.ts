@@ -1,6 +1,5 @@
 interface IUser {
 	_id?: string,
-	id?: string,
 	username?: string,
 	password?: string,
 	email?: string,
@@ -8,6 +7,8 @@ interface IUser {
 	bio?: string,
 	admin?: boolean,
 	active?: boolean,
+	online?: boolean,
+	lastOnline?: Date,
 	verified?: boolean,
 	blocked?: [],
 	friends?: string[],

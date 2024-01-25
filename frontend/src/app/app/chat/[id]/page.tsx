@@ -1,40 +1,68 @@
 "use client";
 import Container from "@/components/Container"
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
 import { Icon } from "@iconify/react"
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import Link from "next/link";
 import { toast } from "sonner";
-import pako from "pako"
-import axios from "axios";
-import { Videotape } from "lucide-react";
 import ChatMenu from "@/components/chat/ChatMenu";
+import Api from "@/services/Api";
+import { isAxiosError } from "axios";
+import ChatModal from "@/components/chat/ChatModal";
+import chatSlice from "@/redux/features/chat/chatSlice";
 
 const s3Url = "https://chatbox-files.s3.ap-south-1.amazonaws.com"
 
 const ChatUser = ({ params }: { params: { id: string } }) => {
 
-	const chat = useSelector((state: RootState) => state?.chat?.messages)
 	const user = useSelector((state: RootState) => state?.user?.user)
-	const friend = user?.friends?.find((e) => e._id == params.id)
+	const chat = useSelector((state: RootState) => state.chat.chats.find((e) => e._id == params.id))
+	const friend = useSelector((state: RootState) => state.chat.chats.find((e) => e._id == params.id))?.members?.find((e) => e.user._id != user._id)?.user
 	const socket = useSelector((state: RootState) => state.socket.socket)
+	const dispatch: AppDispatch = useDispatch()
+
 	const [message, setMessage] = useState("")
 	const [file, setFile] = useState<File | null>(null)
+	const [chatModal, setChatModal] = useState(false)
 
 	const [messages, setMessages] = useState<Array<any>>([])
-	console.log(messages)
 
 	useEffect(() => {
-		const messages = chat.filter((e) => e.sender == params.id || e.reciever == params.id)
-		setMessages(messages)
-	}, [chat])
+		Api.get(`/chat/messages/${params.id}`)
+			.then((resposne) => {
+				if (resposne.data.message) {
+					console.log(resposne.data)
+					setMessages(resposne.data.messages)
+				} else {
+					toast.error(resposne.data.message)
+				}
+			}).catch(error => {
+				if (isAxiosError(error))
+					if (error.response?.data.message)
+						toast.error(error.response.data.message)
+					else
+						toast.error(error.message)
+				else
+					toast.error("something went wrong")
+				console.log(error)
+			})
+	}, [])
+
+	useEffect(() => {
+		if (chat?.group) {
+			socket?.emit("chat:group:join", params)
+			console.log("joining group", params)
+		}
+	}, [chat?.group])
 
 	useEffect(() => {
 		socket?.on("message:recieve", (data) => {
 			console.log(data)
-			setMessages((prev) => [...prev, data])
+			if (data.chat == params.id) {
+				setMessages((prev) => [...prev, data])
+			}
 		})
 	}, [socket])
 
@@ -48,15 +76,17 @@ const ChatUser = ({ params }: { params: { id: string } }) => {
 				size: file.size,
 				name: file.name
 			}
-			data.key = `shared/${user.username}/${file.name}`
-			console.log(file)
+			data.key = `shared/${params.id}/${Date.now()}${file.name}`
 		}
 
 		data.text = message
 		data.createdAt = Date.now()
 		data.sender = user._id
-		data.to = params.id
+		data.chat = params.id
 		data.username = user?.username
+		data.to = friend?._id
+		data.group = chat?.group
+		dispatch(chatSlice.actions.updateLatestMessage({ id: data.chat, message: data.text || data.file.name, time: new Date(Date.now()) }))
 
 		if (message || file) {
 			setMessages((prev) => [...prev, { ...data, file: file }])
@@ -80,49 +110,95 @@ const ChatUser = ({ params }: { params: { id: string } }) => {
 	return (
 		<Container className="flex-col items-center justify-center p-5 gap-2">
 			<div className="flex w-full h-20 gap-4 px-7 items-center justify-between">
-				<div className="flex gap-4 items-center">
-					<div className="rounded-full bg-white h-12 w-12">
-						{
-							friend?.image ?
-								<img src={friend.image} className="h-full w-full rounded-full" alt="" /> :
-								<div className="h-full w-full rounded-full bg-white" ></div>
-						}
-					</div>
-					<p className="text-xl font-bold">
-						{friend?.username}
-					</p>
-				</div>
-				<div className="flex gap-3 items-center">
-					<Link href="/app/call?video=false">
-						<Icon className="text-chat-green h-9 w-10" icon="solar:phone-bold" />
-					</Link>
-					<Link href="/app/call?video=true">
-						<Icon className="text-chat-green h-9 w-10" icon="majesticons:video" />
-					</Link>
-					<ChatMenu />
-				</div>
+				{
+					chat?.group ?
+						<ChatModal className="flex gap-4 items-center" open={chatModal} onOpenChange={setChatModal} chatId={params.id}>
+							<div className="rounded-full bg-white h-12 w-12">
+								{
+									friend?.image ?
+										<img src={friend.image} className="h-full w-full rounded-full" alt="" /> :
+										<div className="h-full w-full rounded-full bg-white" ></div>
+								}
+							</div>
+							<p className="text-xl font-bold">
+								{
+									chat?.group ?
+										chat.groupName :
+										friend?.username
+								}
+							</p>
+						</ChatModal> :
+						<div className="flex gap-4 items-center">
+							<div className="rounded-full bg-white h-12 w-12">
+								{
+									friend?.image ?
+										<img src={friend.image} className="h-full w-full rounded-full" alt="" /> :
+										<div className="h-full w-full rounded-full bg-white" ></div>
+								}
+							</div>
+							<div>
+								<p className="text-xl font-bold">
+									{
+										chat?.group ?
+											chat.groupName :
+											friend?.username
+									}
+								</p>
+								{
+									friend?.online ?
+										<p className="text-xs font-bold text-chat-green">
+											online
+										</p>
+										:
+										<p className="text-xs">
+											last seen {moment(friend?.lastOnline).format("YYYY/MM/DD HH:mm")}
+										</p>
+								}
+							</div>
+						</div>
+
+				}
+				{
+					chat?.group ?
+						<div>
+							<ChatModal chatId={params.id} open={chatModal} onOpenChange={setChatModal} className="flex gap-4 items-center">
+								<Icon className='text-3xl' icon="pepicons-pencil:dots-y" />
+							</ChatModal>
+						</div> :
+						<div className="flex gap-3 items-center">
+							<Link href={`/app/call?video=false&user=${friend?._id}&start=true`}>
+								<Icon className="text-chat-green h-9 w-10" icon="solar:phone-bold" />
+							</Link>
+							<Link href={`/app/call?video=true&user=${friend?._id}&start=true`}>
+								<Icon className="text-chat-green h-9 w-10" icon="majesticons:video" />
+							</Link>
+							<ChatMenu />
+						</div>
+				}
 			</div>
 			<div id="chat-div" className=" p-5 w-full items-center justify-end h-full overflow-y-auto">
 				<div className="flex flex-col" >
-					{messages.map((e, i) => (
-						<div key={i} className={`flex flex-col gap-1 w-max ${e.sender == params.id ? "self-start" : "self-end"}`}>
-							<div className="bg-chat-blue p-2 rounded-lg">
-								{
-									e.file &&
-									<Link href={e.file.url ? e.file.url : `${s3Url}/${e.file.key}`} /* onClick={() => downloadAndDecompress(e.file)} */
-										className="flex gap-2 items-center justify-center p-2 bg-chat-black rounded-lg">
-										<Icon className="text-xl" icon="ic:round-download" />
-										<p>{e?.file?.name}</p>
-									</Link>
-								}
-								<p className=" text-lg font-bold">
-									{e.text}
-								</p>
+					{
+						messages.map((e, i) => (
+							<div key={i} className={`flex flex-col gap-1 w-max ${e.sender == user._id ? "self-end" : "self-start"}`}>
+								<div className="bg-chat-blue p-2 rounded-lg">
+									{
+										e.file &&
+										<Link href={e.file.url ? e.file.url : `${s3Url}/${e.file.key}`}
+											className="flex gap-2 items-center justify-center p-2 bg-chat-black rounded-lg">
+											<Icon className="text-xl" icon="ic:round-download" />
+											<p>{e?.file?.name}</p>
+										</Link>
+									}
+									<p className=" text-lg font-bold">
+										{e.text}
+									</p>
+								</div>
+								<p className={`opacity-50 text-sm ${e.sender == params.id ? "self-start" : "self-end"}`}>
+									{moment(e.createdAt).format("dd MM yyyy HH:mm")}</p>
 							</div>
-							<p className={`opacity-50 text-sm ${e.sender == params.id ? "self-start" : "self-end"}`}>
-								{moment(e.createdAt).format("dd MM yyyy HH:mm")}</p>
-						</div>
-					))}
+						))
+					}
 				</div>
 			</div>
 			<form onSubmit={sendMessage} className="flex px-3 gap-2 items-center justify-center w-full h-20">

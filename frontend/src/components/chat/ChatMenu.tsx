@@ -4,8 +4,6 @@ import { Icon } from '@iconify/react/dist/iconify.js'
 
 const ChatMenu = () => {
 
-			
-
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger className='outline-none'>

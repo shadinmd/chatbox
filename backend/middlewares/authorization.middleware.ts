@@ -39,6 +39,7 @@ const authorizationMiddleware = async (req: Request, res: Response, next: NextFu
 		console.log(error)
 		res.status(500).send({
 			success: false,
+			error: "invalidtoken",
 			message: "error authorizing user"
 		})
 	}

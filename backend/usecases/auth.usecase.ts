@@ -34,10 +34,9 @@ class AuthUsecase {
 
 	async register(data: { email: string, username: string, password: string }) {
 		try {
-			const id = this.uuidRepository.generateId()
 			const hashedPassword = this.bcryptRepostiroy.hash(data.password)
 			const verificationToken = this.cryptoRepository.generateVerificationToken()
-			const response = await this.userRepository.create({ ...data, id, password: hashedPassword, verificationToken })
+			const response = await this.userRepository.create({ ...data, password: hashedPassword, verificationToken })
 			return {
 				status: response.success ? 200 : 500,
 				data: {

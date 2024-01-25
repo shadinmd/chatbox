@@ -1,9 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react"
+import React from "react"
 import Container from "./Container"
-import { isAxiosError } from "axios";
-import { toast } from "sonner";
-import Api from "@/services/Api";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import Link from "next/link";
@@ -16,36 +13,14 @@ interface Props {
 
 const RequestModal: React.FC<Props> = ({ isOpen = false, onClose }) => {
 
-	const [requests, setRequests] = useState<Array<any>>()
 	const socket = useSelector((state: RootState) => state.socket.socket)
-
-	useEffect(() => {
-		(async () => {
-			try {
-				const { data } = await Api.get("/chat/requests")
-				if (data.success) {
-					console.log(data.requests)
-					setRequests(data.requests)
-				} else {
-					toast.error(data.message)
-				}
-			} catch (error) {
-				if (isAxiosError(error)) {
-					if (error.response?.data.message) {
-						toast.error(error.response.data.message)
-					} else {
-						toast.error(error.message)
-					}
-				} else {
-					console.log(error)
-				}
-			}
-		})()
-	}, [])
+	const currentUser = useSelector((state: RootState) => state.user.user)
+	const requests = useSelector((state: RootState) => state.chat.requests)
 
 	const accept = (id: string) => {
 		try {
-			socket?.emit("chat:accept", { id })
+			socket?.emit("chat:friend:accept", { id, user: currentUser._id, username: currentUser.username })
+			console.log("accepted")
 		} catch (error) {
 			console.log(error)
 		}
@@ -68,24 +43,24 @@ const RequestModal: React.FC<Props> = ({ isOpen = false, onClose }) => {
 						<Container className="flex justify-start flex-col p-10">
 							{
 								requests &&
-								requests?.map((e) => (
-									<div className="flex items-center justify-between text-black bg-chat-blue w-full rounded-lg px-4 py-3 font-bold">
+								requests?.map((e, i) => (
+									<div key={i} className="flex items-center justify-between text-black bg-chat-blue w-full rounded-lg px-4 py-3 font-bold">
 										<p>
 											{e?.sender?.username}
 										</p>
 										<div className="flex items-center gap-4">
-											<Link className="flex gap-2 items-center" href={`/app/user/${e.sender._id}`}>
+											<Link className="flex gap-2 items-center" href={`/app/user/${e.sender?._id}`}>
 												View
 												<Icon className="text-lg" icon="ph:arrow-square-out-bold" />
 											</Link>
 											{
 												e.status == "WAITING" ?
-													<button onClick={(event) => accept(e.sender._id)} className="bg-chat-green rounded-lg px-2 py-1">
+													<button onClick={(event) => accept(e?.sender?._id!)} className="bg-chat-green rounded-lg px-2 py-1">
 														accept
 													</button>
 													:
 													e.status == "ACCEPTED" ?
-														<Link className="bg-chat-green rounded-lg px-2 py-1" href={`/app/chat/${e.sender._id}`}>
+														<Link className="bg-chat-green rounded-lg px-2 py-1" href={`/app/chat/${e.sender?._id}`}>
 															Chat
 														</Link>
 														: <p className="text-chat-red px-2 py-1">

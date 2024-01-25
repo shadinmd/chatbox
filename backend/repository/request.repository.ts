@@ -8,9 +8,11 @@ class RequestRepositroy {
 	async create(data: IRequest) {
 		try {
 			const response = await new RequestModel(data).save()
+			await response.populate("sender")
 			return {
 				success: true,
-				data: "request send"
+				data: "request send",
+				request: response
 			}
 		} catch (error) {
 			return {

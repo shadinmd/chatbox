@@ -164,6 +164,28 @@ class UserRepository {
 			}
 		}
 	}
+
+	async setOnlineStatus(id: string, online: boolean) {
+		try {
+			if (online) {
+				const response = await UserModel.updateOne({ _id: id }, { $set: { online: online } })
+			}
+			else {
+				const time = Date.now()
+				console.log(time)
+				const response = await UserModel.updateOne({ _id: id }, { $set: { online, lastOnline: time } })
+			}
+			return {
+				success: true,
+				message: "user status online changed"
+			}
+		} catch (error) {
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
 }
 
 export default UserRepository

@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const users = () => {
+const Users = () => {
 	const [users, setUsers] = useState<Array<any>>()
 	const [search, setSearch] = useState("")
 
@@ -58,8 +58,22 @@ const users = () => {
 
 	return (
 		<Container className="w-full gap-2 bg-black flex items-center"  >
-			<Container className="flex-col items-center gap-5 py-5 justify-center">
-				<h1 className="text-3xl font-bold text-left w-full px-10">Users</h1>
+			<Container className="flex-col items-center gap-5 py-5  justify-center">
+				<div className="flex justify-between items-center w-full px-10">
+					<h1 className="text-3xl font-bold text-left w-full">Users</h1>
+					<div className="flex gap-2">
+						<div className="flex flex-col items-center">
+							<div className="bg-chat-blue rounded-full h-[30px] w-[30px]">
+							</div>
+							<p>user</p>
+						</div>
+						<div className="flex flex-col items-center">
+							<div className="bg-chat-red rounded-full h-[30px] w-[30px]">
+							</div>
+							<p>admin</p>
+						</div>
+					</div>
+				</div>
 				<div className="flex justify-center items-center w-full px-10">
 					<input
 						type="text"
@@ -70,10 +84,11 @@ const users = () => {
 				</div>
 				<div className="flex flex-col gap-2 w-full px-10 font-bold items-center justify-start h-5/6">
 					{
-						users && users.map((e: any) => (
+						users && users.map((e: any, i) => (
 							<Link
+								key={i}
 								href={`/app/admin/users/${e._id}`}
-								className="flex justify-between w-full rounded-lg px-5 py-2 bg-chat-blue text-chat-black"
+								className={`flex justify-between w-full rounded-lg px-5 py-2 ${e.admin ? "bg-chat-red" : "bg-chat-blue"}  text-chat-black`}
 							>
 								<p>
 									{e.username}
@@ -90,4 +105,4 @@ const users = () => {
 	)
 }
 
-export default users 
+export default Users 

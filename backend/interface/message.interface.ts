@@ -1,6 +1,6 @@
 interface IMessage {
 	sender?: string,
-	reciever?: string,
+	chat?: string,
 	text?: string,
 	createdAt?: Date,
 	file?: string,
