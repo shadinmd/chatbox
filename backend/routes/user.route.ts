@@ -12,16 +12,16 @@ const userRepository = new UserRepository()
 const s3Repositroy = new S3Repository()
 const jwtRepository = new JwtRepository()
 const userUsecase = new UserUsecase(userRepository, s3Repositroy, jwtRepository)
-const userController = new UserController(userUsecase)
+const userController = new UserController(userUsecase, jwtRepository)
 
 router.route("/")
 	.get(authorizationMiddleware, (req: Request, res: Response) => userController.getCurrentUser(req, res))
 	.put(authorizationMiddleware, upload.single("file"), (req: Request, res: Response) => userController.edit(req, res))
 
-router.get("/users", (req: Request, res: Response) => userController.getUsers(req, res))
+router.get("/users", authorizationMiddleware, (req: Request, res: Response) => userController.getUsers(req, res))
 
 router.route("/:id")
-	.get((req: Request, res: Response) => userController.getUserDetails(req, res))
+	.get(authorizationMiddleware, (req: Request, res: Response) => userController.getUserDetails(req, res))
 
 
 export default router
