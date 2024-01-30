@@ -68,12 +68,12 @@ const ChatSideBar = () => {
 							</Link> :
 							<Link href={`/app/chat/${e?._id}`} key={i} className={`flex w-full justify-between items-center gap-5`} >
 								<div className="flex gap-4">
-									<div className={`h-10 w-10 rounded-full bg-white ${e.members?.find((item) => item.user?._id != currentUser?._id)?.user.online ? "outline" : ""}  outline-chat-green`}>
-										<img src={e?.members?.find((item) => item.user?._id != currentUser?._id)?.user.image} alt="" />
+									<div className={`h-10 w-10 rounded-full bg-white ${e?.members?.find((item) => item?.user?._id != currentUser?._id)?.user?.online ? "outline" : ""}  outline-chat-green`}>
+										<img src={e?.members?.find((item) => item?.user?._id != currentUser?._id)?.user?.image} alt="" />
 									</div>
 									<div className="flex flex-col gap-1">
 										<p className="font-bold">
-											{e.members?.find((item) => item.user._id != currentUser._id)?.user.username}
+											{e?.members?.find((item) => item?.user?._id != currentUser?._id)?.user?.username}
 										</p>
 										<p className="text-xs opacity-60">
 											{e.latestMessage || "no new messages"}
