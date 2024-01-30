@@ -22,7 +22,7 @@ const Verfiy = () => {
 					setLoading(true)
 					const {data} = await Api.put("/auth/verify", { email, token })
 					if(data.success){
-						router.push("/app/chat")
+						router.push("/app/login")
 				}else{
 						toast.error(data.message)
 					}
