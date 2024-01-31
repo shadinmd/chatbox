@@ -95,6 +95,9 @@ const Login = () => {
 					<Link href={"/app/register"} >
 						don't have an account? click here
 					</Link>
+					<Link href={"/forgot"} >
+						forgot password?
+					</Link>
 				</form>
 			</div>
 		</div>

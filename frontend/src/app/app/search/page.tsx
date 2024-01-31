@@ -56,7 +56,7 @@ const Search = () => {
 					<Icon icon="ion:mail-unread" className="text-3xl text-chat-green" />
 				</button>
 			</div>
-			<div className="w-full h-5/6 max-h-full grid grid-cols-4 grid-rows-3 gap-2 p-2 overflow-y-auto">
+			<div className="w-full h-5/6 max-h-full grid grid-cols-2 lg:grid-cols-4 grid-rows-3 gap-2 p-2 overflow-y-auto">
 				{
 					users &&
 					users.map((e, i) =>

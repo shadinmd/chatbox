@@ -1,5 +1,4 @@
 import Container from "@/components/Container"
-import AdminSideBar from "@/components/admin/Sidebar"
 
 const Admin = () => {
 	return (

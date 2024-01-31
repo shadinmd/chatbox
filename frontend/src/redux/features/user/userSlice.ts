@@ -12,7 +12,9 @@ export interface IUser {
 	online: boolean,
 	lastOnline: Date,
 	friends: IUser[],
-	blocked: any[]
+	blocked: any[],
+	createdAt: Date,
+	updatedAt: Date
 }
 
 interface initialStateType {
@@ -33,7 +35,9 @@ const initialState: initialStateType = {
 		online: false,
 		lastOnline: new Date(),
 		friends: [],
-		blocked: []
+		blocked: [],
+		createdAt: new Date(),
+		updatedAt: new Date()
 	},
 	loading: false,
 	error: false

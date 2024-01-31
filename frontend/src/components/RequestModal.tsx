@@ -60,7 +60,7 @@ const RequestModal: React.FC<Props> = ({ isOpen = false, onClose }) => {
 													</button>
 													:
 													e.status == "ACCEPTED" ?
-														<Link className="bg-chat-green rounded-lg px-2 py-1" href={`/app/chat/${e.sender?._id}`}>
+														<Link className="bg-chat-green rounded-lg px-2 py-1" href={`/app/chat/`}>
 															Chat
 														</Link>
 														: <p className="text-chat-red px-2 py-1">

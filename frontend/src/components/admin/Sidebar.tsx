@@ -10,9 +10,6 @@ const AdminSideBar = () => {
 		<Container className="flex-col justify-start py-20 gap-10 w-1/3">
 			<h1 className="text-5xl font-bold">Admin</h1>
 			<div className="flex text-2xl font-bold flex-col gap-5">
-				<Link className={current != undefined ? "opacity-50" : ""} href="/app/admin">
-					Overview
-				</Link>
 				<Link className={current != "users" ? `opacity-50` : ""} href="/app/admin/users">
 					Users
 				</Link>

@@ -15,9 +15,6 @@ const SettingsSidebar = () => {
 				<Link className={current != "account" ? "opacity-50" : ""} href="/app/settings/account">
 					Account
 				</Link>
-				<Link className={current != "theme" ? "opacity-50" : ""} href="/app/settings/theme">
-					Theme
-				</Link>
 				<Link className={current != "info" ? "opacity-50" : ""} href="/app/settings/info">
 					Info
 				</Link>

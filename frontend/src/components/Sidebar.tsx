@@ -21,9 +21,6 @@ const Sidebar = () => {
 				<Link href="/app/chat">
 					<Icon className="text-chat-green h-9 w-9" icon={"mdi:chat"}></Icon>
 				</Link>
-				<Link href="/app/calls">
-					<Icon className="text-chat-violet h-9 w-10" icon="solar:phone-bold" />
-				</Link>
 				<Link href="/app/search">
 					<Icon className="text-chat-green h-9 w-10" icon="ion:person-add" />
 				</Link>
@@ -33,7 +30,7 @@ const Sidebar = () => {
 				{
 					auth.loggedIn &&
 					user?.user?.admin &&
-					<Link href="/app/admin">
+					<Link href="/app/admin/users">
 						<Icon className="text-chat-red h-9 w-9" icon={"eos-icons:admin"}></Icon>
 					</Link>
 				}
@@ -46,5 +43,9 @@ const Sidebar = () => {
 		</div>
 	)
 }
+
+// <Link href="/app/calls">
+// 	<Icon className="text-chat-violet h-9 w-10" icon="solar:phone-bold" />
+// </Link>
 
 export default Sidebar
