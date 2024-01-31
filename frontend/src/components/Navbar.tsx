@@ -14,7 +14,7 @@ const Navbar = () => {
 	}
 
 	return (
-		<header className="flex w-full bg-chat-white h-20 px-20 items-center justify-between">
+		<header className="flex w-full bg-white h-20 px-20 items-center justify-between">
 			<Link href="/" className="text-chat-blue text-2xl font-extrabold">
 				ChatBox
 			</Link>
