@@ -14,12 +14,12 @@ const Navbar = () => {
 	}
 
 	return (
-		<header className="flex w-full bg-chat-black h-20 px-20 items-center justify-between">
+		<header className="flex w-full bg-chat-white h-20 px-20 items-center justify-between">
 			<Link href="/" className="text-chat-blue text-2xl font-extrabold">
 				ChatBox
 			</Link>
 			<div className="flex items-center justify-center gap-4 text-chat-blue font-bold text-base">
-				<Link href={"/download"} className="text-chat-blue bg-black rounded-lg px-4 py-2">
+				<Link href={"/download"} className="text-white bg-chat-blue rounded-lg px-4 py-2">
 					Download
 				</Link>
 				<button onClick={getStarted} className="bg-chat-blue text-white px-4 py-2  rounded-lg">
