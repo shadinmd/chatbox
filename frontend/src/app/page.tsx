@@ -87,14 +87,6 @@ const Home = () => {
 					</p>
 				</div>
 			</div>
-			<div className='flex items-start justify-center h-40'>
-				<Link
-					href={"/app/chat"}
-					className='bg-chat-blue text-3xl font-extrabold text-white rounded-lg px-3 py-1'
-				>
-					Get Started
-				</Link>
-			</div>
 			<footer className='flex py-5 justify-evenly bg-white items-center'>
 				<div className='text-chat-blue text-4xl font-extrabold'>
 					Chat box
