@@ -16,7 +16,7 @@ import { z } from "zod"
 type className = string
 type formType = z.infer<typeof editUserFormSchema>
 
-const inputStyle: className = "text-black focus:outline-none px-2 py-1 rounded-lg"
+const inputStyle: className = "text-black focus:outline-none px-2 py-1 border-2 rounded-lg"
 
 
 const User = ({ params }: { params: { id: string } }) => {
@@ -130,10 +130,10 @@ const User = ({ params }: { params: { id: string } }) => {
 	}
 
 	return (
-		<Container className="p-10 gap-10">
+		<Container className="p-10 gap-10 text-custom-blue">
 			<Link
 				href={"/app/admin/users"}
-				className="text-chat-blue z-10 text-3xl absolute top-10 left-32"
+				className="text-custom-blue z-10 text-3xl absolute top-10 left-32"
 			>
 				<Icon icon="tabler:arrow-left" />
 			</Link>
@@ -175,7 +175,7 @@ const User = ({ params }: { params: { id: string } }) => {
 						className={inputStyle}
 					/>
 				</div>
-				{errors.username && <p className="text-chat-red">{errors.username.message}</p>}
+				{errors.username && <p className="text-custom-red">{errors.username.message}</p>}
 				<div className="w-full flex justify-between">
 					<label >email: </label>
 					<input
@@ -185,7 +185,7 @@ const User = ({ params }: { params: { id: string } }) => {
 						className={inputStyle}
 					/>
 				</div>
-				{errors.email && <p className="text-chat-red">{errors.email.message}</p>}
+				{errors.email && <p className="text-custom-red">{errors.email.message}</p>}
 				<div className="w-full flex justify-between gap-1">
 					<label >bio: </label>
 					<input
@@ -195,33 +195,33 @@ const User = ({ params }: { params: { id: string } }) => {
 						className={inputStyle}
 					/>
 				</div>
-				{errors.bio && <p className="text-chat-red">{errors.bio.message}</p>}
+				{errors.bio && <p className="text-custom-red">{errors.bio.message}</p>}
 				<div className="w-full mt-2 flex gap-5 justify-end">
 					<button
-						className="px-2 py-1 bg-chat-red font-bold rounded-lg"
+						className="px-2 py-1 bg-custom-red font-bold rounded-lg text-white"
 						type="button"
 						onClick={cancel}
 					>
 						Cancel
 					</button>
 					<button
-						className="px-2 py-1 bg-chat-blue font-bold rounded-lg"
+						className="px-2 py-1 bg-custom-blue font-bold rounded-lg text-white"
 						type="submit"
 					>
 						Save
 					</button>
 				</div>
 			</form>
-			<Container className="flex-col items-center gap-10 px-10 justify-center rounded-none border-s border-white">
+			<Container className="flex-col text-black items-center gap-10 px-10 justify-center rounded-none border-s border-black">
 				<div className="flex flex-col w-full gap-2">
 					<h3 className="text-2xl font-bold">Admin</h3>
 					<p className="opacity-60">Make this user an admin?</p>
 					{
 						(user && currentUser.user._id == params.id) ?
-							<p className="text-chat-red">you cannot change your admin status</p> :
+							<p className="text-custom-red">you cannot change your admin status</p> :
 							<button
 								onClick={admin}
-								className="px-2 py-1 bg-chat-blue font-bold rounded-lg w-20"
+								className="px-2 py-1 bg-custom-blue font-bold rounded-lg w-20 text-white"
 							>
 								Admin
 							</button>
@@ -232,10 +232,10 @@ const User = ({ params }: { params: { id: string } }) => {
 					<p className="opacity-60">block or unblock the current user?</p>
 					{
 						(user && currentUser.user._id == params.id) ?
-							<p className="text-chat-red">you cannot block yourself</p> :
+							<p className="text-custom-red">you cannot block yourself</p> :
 							<button
 								onClick={block}
-								className="px-2 py-1 bg-chat-red font-bold rounded-lg w-20"
+								className="px-2 py-1 bg-custom-red font-bold rounded-lg w-20 text-white"
 							>
 								Block
 							</button>
