@@ -6,7 +6,7 @@ import { Icon } from "@iconify/react";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "./ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import chatSlice, { IRequest } from "@/redux/features/chat/chatSlice";
-import { Link } from "lucide-react";
+import Link from "next/link"
 
 const RequestModal: React.FC = () => {
 
