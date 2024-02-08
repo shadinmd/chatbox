@@ -1,11 +1,14 @@
 import ChatModel from "../models/chat.model"
 
+// db should be in outer most layer
 class ChatRepository {
 	constructor() { }
 
 	async getChats(id: string) {
 		try {
-			const chats = await ChatModel.find({ "members.user": { $in: id } }).populate("members.user")
+			const chats = await ChatModel.find({ "members.user": { $in: id } })
+				.sort({ latestMessageTime: -1 })
+				.populate("members.user")
 			return {
 				success: true,
 				message: "chats fetched",
@@ -47,7 +50,13 @@ class ChatRepository {
 			const time = Date.now()
 			await ChatModel.updateOne(
 				{ _id: id },
-				{ $set: { latestMessage: message, latestMessageTime: time } })
+				{
+					$set: {
+						latestMessage: message,
+						latestMessageTime: time,
+						$inc: { newMessages: 1 }
+					}
+				})
 			return {
 				success: true,
 				message: "chat updated"
@@ -112,6 +121,22 @@ class ChatRepository {
 			return {
 				success: true,
 				message: "member removed"
+			}
+		} catch (error) {
+			console.log(error)
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
+
+	async deletechat(data: { id: string }) {
+		try {
+			const response = await ChatModel.deleteOne({ _id: data.id })
+			return {
+				success: true,
+				message: "chat deleted"
 			}
 		} catch (error) {
 			console.log(error)

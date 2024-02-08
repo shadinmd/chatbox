@@ -11,17 +11,17 @@ const Account = () => {
 
 	const logout = () => {
 		dispatch(authSlice.actions.logout())
-		router.push("/app/login")
+		router.push("/login")
 	}
 
 	return (
-		<Container className="flex-col gap-10 items-start">
+		<Container className="flex-col gap-10 items-center justify-center text-custom-blue font-bold">
 			<div className="flex flex-col gap-2">
 				<h2 className="text-2xl font-bold">Logout ? </h2>
 				<p className="opacity-60">logout from current account</p>
 				<button
 					onClick={logout}
-					className="px-2 py-1 w-20 bg-chat-red font-bold rounded-lg"
+					className="px-2 py-1 w-20 bg-custom-red font-bold rounded-lg"
 				>
 					Logout
 				</button>
@@ -31,7 +31,7 @@ const Account = () => {
 				<p className="opacity-60">change your password</p>
 				<ChangePassword>
 					<div
-						className="px-2 py-1 w-32 bg-chat-red font-bold rounded-lg"
+						className="px-2 py-1 w-32 bg-custom-red font-bold rounded-lg"
 					>
 						Change Password
 					</div>

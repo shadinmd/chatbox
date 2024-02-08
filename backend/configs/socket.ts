@@ -7,6 +7,7 @@ import FileRepository from "../repository/file.repository"
 import S3Repository from "../repository/s3.repository"
 import ChatModel from "../models/chat.model"
 import ChatRepository from "../repository/chat.repository"
+import IChat from "../interface/chat.interface"
 
 
 const chatRepository = new ChatRepository()
@@ -40,10 +41,16 @@ const configureSocket = (server: http.Server) => {
 	})
 
 	io.on("connect", (socket) => {
+
 		socket.on("initiate", async (data) => {
-			connections.push({ id: data.id, socket: socket.id })
-			console.log(connections)
 			await userRepository.setOnlineStatus(data.id, true)
+			connections.push({ id: data.id, socket: socket.id })
+			const user = await userRepository.findById(data.id)
+			user.user?.friends?.forEach((e: any) => {
+				const socketId = getSocketId(e?._id!)
+				if (socketId)
+					io.to(socketId).emit("friend:online", data)
+			})
 		})
 
 		socket.on("chat:friend:request", async (data) => {
@@ -58,30 +65,82 @@ const configureSocket = (server: http.Server) => {
 			}
 		})
 
-		socket.on("chat:friend:block", (data) => { })
+		socket.on("chat:friend:cancel", async (data) => {
+			await requestRepositroy.delete(data.id)
+			const socketId = getSocketId(data.to)
+			if (socketId)
+				io.to(socketId).emit("chat:friend:cancel", data)
+		})
+
+		socket.on("chat:friend:unfriend", async (data) => {
+			console.log(data)
+			await userRepository.unfriend(data.id, data.friend)
+			await chatRepository.deletechat({ id: data.chat })
+			const socketId = getSocketId(data.friend)
+			if (socketId) {
+				io.to(socketId).emit("noti:recieve", {
+					status: "success",
+					message: `${data.username}: removed you from their friend list`
+				})
+			}
+		})
+
+		socket.on("chat:friend:block", async (data) => {
+			await userRepository.block(data.id, data.friend)
+			await chatRepository.deletechat({ id: data.chat })
+			const socketId = getSocketId(data.friend)
+			if (socketId) {
+				io.to(socketId).emit("noti:recieve", {
+					status: "success",
+					message: `${data.username}: has blocked you`
+				})
+			}
+		})
 
 		socket.on("chat:friend:accept", async (data) => {
-			await requestRepositroy.accept({ sender: data.id, reciever: data.user })
-			await new ChatModel({
-				group: false, members: [
-					{ user: data.id, role: "user" },
-					{ user: data.user, role: "user" }
-				]
-			}).save()
-			await userRepository.addFriend(data.user, data.id)
-			await userRepository.addFriend(data.id, data.user)
-			const socket = getSocketId(data.id)
-			if (socket) {
-				io.to(socket).emit("noti:recieve", {
-					status: "success",
-					message: `${data.username}: accepted your friend request`
-				})
+			try {
+				await requestRepositroy.accept({ sender: data.id, reciever: data.user })
+				await new ChatModel({
+					group: false, members: [
+						{ user: data.id, role: "user" },
+						{ user: data.user, role: "user" }
+					]
+				}).save()
+				console.log(data)
+				const response = await userRepository.addFriend(data.user, data.id)
+				console.log(response)
+				const socketId = getSocketId(data.id)
+				if (response.success) {
+					if (socketId) {
+						io.to(socketId).emit("noti:recieve", {
+							status: "success",
+							message: `${data.username}: accepted your friend request`
+						})
+					}
+				} else {
+					socket.emit("noti:recieve", {
+						status: "success",
+						message: `failed accept user request`
+					})
+				}
+			} catch (error) {
+				console.log(error)
 			}
 		})
 
 		socket.on("chat:group:join", (data) => {
 			console.log("group join", socket.id, data)
 			socket.join(data.id)
+		})
+
+		socket.on("groups:init", ({ groups }: { groups: IChat[] }) => {
+			console.log("grouping", groups)
+			if (groups) {
+				groups.forEach((e) => {
+					if (e.group)
+						socket.join(e._id!)
+				})
+			}
 		})
 
 		socket.on("message:send", async (data) => {
@@ -147,7 +206,15 @@ const configureSocket = (server: http.Server) => {
 
 		socket.on("disconnect", async () => {
 			const id = getUserId(socket.id)
-			await userRepository.setOnlineStatus(id!, false)
+			if (!id) return
+
+			await userRepository.setOnlineStatus(id, false)
+			const user = await userRepository.findById(id)
+			user.user?.friends?.forEach((e: any) => {
+				const socketId = getSocketId(e?._id!)
+				if (socketId)
+					io.to(socketId).emit("friend:offline", { id: e?._id! })
+			})
 			connections = connections.filter((e) => e.socket != socket.id)
 			console.log(connections)
 		})

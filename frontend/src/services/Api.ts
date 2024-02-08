@@ -22,12 +22,12 @@ Api.interceptors.response.use(
 			if (error?.response?.data?.error == "blocked") {
 				localStorage.removeItem("token")
 				toast.error("your account is blocked")
-				window.location.assign("/app/login")
+				window.location.assign("/login")
 			} else if (error?.response?.data?.error == "verification") {
 				window.location.assign("/verify")
 			} else if (error.response?.data.error == "invalidtoken") {
 				localStorage.removeItem("token")
-				window.location.assign("/app/login")
+				window.location.assign("/login")
 			}
 			else {
 				return Promise.reject(error)

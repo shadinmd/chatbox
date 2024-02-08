@@ -35,6 +35,11 @@ const userSchema = new mongoose.Schema<IUser>({
 		default: [],
 		ref: "User"
 	},
+	blocked: {
+		type: Array<String>,
+		default: [],
+		ref: "User"
+	},
 	online: {
 		type: Boolean,
 		default: false

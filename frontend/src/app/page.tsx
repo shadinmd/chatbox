@@ -87,7 +87,7 @@ const Home = () => {
 					</p>
 				</div>
 			</div>
-			<footer className='flex py-5 justify-evenly bg-white items-center'>
+			<footer className='flex py-5 justify-evenly bg-custom-blue text-white items-center'>
 				<div className='text-chat-blue text-4xl font-extrabold'>
 					Chat box
 				</div>
@@ -95,7 +95,7 @@ const Home = () => {
 					<Link className='text-xl font-bold' href={"/"}>
 						Home
 					</Link>
-					<Link className='text-xl font-bold' href={"/app/login"}>
+					<Link className='text-xl font-bold' href={"/login"}>
 						Login
 					</Link>
 					<Link className='text-xl font-bold' href={"/download"}>

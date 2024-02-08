@@ -9,12 +9,10 @@ const config: Config = {
 	theme: {
 		extend: {
 			colors: {
-				"chat-black": "#101010",
-				"chat-blue": "#397FFF",
-				"chat-red": "#FF3E3E",
-				"chat-green": "#3AFF1A",
-				"chat-yellow": "#FFE923",
-				"chat-violet": "#BD00FF",
+				"custom-red": "#FD5050",
+				"custom-blue": "#181F2E",
+				"custom-grey": "#EBF4FB",
+				"custom-dark-grey" : "#E2EEF7",
 				border: "hsl(var(--border))",
 				input: "hsl(var(--input))",
 				ring: "hsl(var(--ring))",
@@ -72,4 +70,12 @@ const config: Config = {
 	},
 	plugins: [],
 }
+
+// "chat-black": "#101010",
+// "chat-blue": "#397FFF",
+// "chat-red": "#FF3E3E",
+// "chat-green": "#3AFF1A",
+// "chat-yellow": "#FFE923",
+// "chat-violet": "#BD00FF",
+
 export default config

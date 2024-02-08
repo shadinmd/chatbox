@@ -20,10 +20,10 @@ const Verfiy = () => {
 			try {
 				if (token && email) {
 					setLoading(true)
-					const {data} = await Api.put("/auth/verify", { email, token })
-					if(data.success){
-						router.push("/app/login")
-				}else{
+					const { data } = await Api.put("/auth/verify", { email, token })
+					if (data.success) {
+						router.push("/login")
+					} else {
 						toast.error(data.message)
 					}
 				}
@@ -31,15 +31,15 @@ const Verfiy = () => {
 			} catch (error) {
 				if (isAxiosError(error)) {
 					if (error.response?.data.message)
-					toast.error(error.response.data.message)
+						toast.error(error.response.data.message)
 					else
-					toast.error(error.message)
+						toast.error(error.message)
 				} else {
 					console.log(error)
 				}
 				setLoading(false)
 			}
-			})()
+		})()
 	})
 
 	const resend = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -47,9 +47,9 @@ const Verfiy = () => {
 		try {
 			const { data } = await Api.post("/auth/verify", { email: localStorage.getItem("email") })
 			if (data.success)
-			toast.success("email send successfully")
+				toast.success("email send successfully")
 			else
-			toast.error(data.message)
+				toast.error(data.message)
 		} catch (error) {
 			if (isAxiosError(error)) {
 				if (error.response?.data.message) {
@@ -67,19 +67,19 @@ const Verfiy = () => {
 		<div className='flex flex-col items-center justify-start h-screen w-screen bg-chat-black text-white'>
 			<Navbar />
 			<div className='flex flex-col gap-5 items-center justify-center text-center h-full w-full'>
-				<h1 className='text-4xl font-bold'>Please verify your email</h1>
-				<p className='text-xl'>
+				<h1 className='text-6xl font-bold text-custom-blue'>Verify email</h1>
+				<p className='text-xl text-custom-blue font-bold'>
 					We have sent you an email
-				<br />
+					<br />
 					please click the link in the email for verifying your email
 				</p>
 				<div className='flex flex-col gap-2'>
 					<p>can't find the email?</p>
-					<button disabled={loading} onClick={resend} className={` p-2 ${loading ? "bg-gray-500" : "bg-chat-blue" } font-bold rounded-lg`}>
+					<button disabled={loading} onClick={resend} className={` p-2 ${loading ? "bg-custom-dark-grey" : "bg-custom-red"} font-bold rounded-lg`}>
 						{
 							loading ?
 								"verifying..." :
-							"resend"
+								"resend"
 						}
 					</button>
 				</div>

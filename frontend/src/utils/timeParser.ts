@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export function parseTime(time: Date) {
+function parseTime(time: Date) {
 	const currentTime = moment();
 	const timestamp = moment(time);
 
@@ -20,3 +20,5 @@ export function parseTime(time: Date) {
 		return `${Math.floor(duration.asYears())}year ago`;
 	}
 }
+
+export default parseTime

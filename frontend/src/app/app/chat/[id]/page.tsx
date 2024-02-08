@@ -12,14 +12,15 @@ import Api from "@/services/Api";
 import { isAxiosError } from "axios";
 import ChatModal from "@/components/chat/ChatModal";
 import chatSlice from "@/redux/features/chat/chatSlice";
+import parseTime from "@/utils/timeParser";
 
 const s3Url = "https://chatbox-files.s3.ap-south-1.amazonaws.com"
 
 const ChatUser = ({ params }: { params: { id: string } }) => {
 
 	const user = useSelector((state: RootState) => state?.user?.user)
-	const chat = useSelector((state: RootState) => state.chat.chats.find((e) => e._id == params.id))
-	const friend = useSelector((state: RootState) => state.chat.chats.find((e) => e._id == params.id))?.members?.find((e) => e.user._id != user._id)?.user
+	const chat = useSelector((state: RootState) => state.chat.chats.find((e) => e?._id == params?.id))
+	const friend = useSelector((state: RootState) => state.chat.chats.find((e) => e?._id == params?.id))?.members?.find((e) => e?.user?._id != user?._id)?.user
 	const socket = useSelector((state: RootState) => state.socket.socket)
 	const dispatch: AppDispatch = useDispatch()
 
@@ -49,13 +50,6 @@ const ChatUser = ({ params }: { params: { id: string } }) => {
 				console.log(error)
 			})
 	}, [])
-
-	useEffect(() => {
-		if (chat?.group) {
-			socket?.emit("chat:group:join", params)
-			console.log("joining group", params)
-		}
-	}, [chat?.group])
 
 	useEffect(() => {
 		socket?.on("message:recieve", (data) => {
@@ -108,17 +102,15 @@ const ChatUser = ({ params }: { params: { id: string } }) => {
 	}
 
 	return (
-		<Container className="flex-col items-center justify-center p-5 gap-2">
-			<div className="flex w-full h-20 gap-4 px-7 items-center justify-between">
+		<Container className="flex-col items-center justify-center p-5 gap-2 text-custom-blue">
+			<div className="flex w-full h-20 gap-4 px-7 items-center justify-between border-b-2 border-custom-dark-grey">
 				{
 					chat?.group ?
 						<ChatModal className="flex gap-4 items-center" open={chatModal} onOpenChange={setChatModal} chatId={params.id}>
 							<div className="rounded-full bg-white h-12 w-12">
-								{
-									friend?.image ?
-										<img src={friend.image} className="h-full w-full rounded-full" alt="" /> :
-										<div className="h-full w-full rounded-full bg-white" ></div>
-								}
+								<div className="flex items-center justify-center h-full w-full rounded-full bg-white" >
+									<Icon icon={"mdi:account-group"} className="text-4xl" />
+								</div>
 							</div>
 							<p className="text-xl font-bold">
 								{
@@ -133,7 +125,9 @@ const ChatUser = ({ params }: { params: { id: string } }) => {
 								{
 									friend?.image ?
 										<img src={friend.image} className="h-full w-full rounded-full" alt="" /> :
-										<div className="h-full w-full rounded-full bg-white" ></div>
+										<div className="flex items-center justify-center h-full w-full rounded-full bg-white" >
+											<Icon icon={"mdi:person"} className="text-custom-blue text-3xl" />
+										</div>
 								}
 							</div>
 							<div>
@@ -172,7 +166,7 @@ const ChatUser = ({ params }: { params: { id: string } }) => {
 							<Link href={`/app/call?video=true&user=${friend?._id}&start=true`}>
 								<Icon className="text-chat-green h-9 w-10" icon="majesticons:video" />
 							</Link>
-							<ChatMenu />
+							<ChatMenu chat={params.id} friend={friend?._id!} />
 						</div>
 				}
 			</div>
@@ -180,8 +174,8 @@ const ChatUser = ({ params }: { params: { id: string } }) => {
 				<div className="flex flex-col" >
 					{
 						messages.map((e, i) => (
-							<div key={i} className={`flex flex-col gap-1 w-max ${e.sender == user._id ? "self-end" : "self-start"}`}>
-								<div className="bg-chat-blue p-2 rounded-lg">
+							<div key={i} className={`flex flex-col gap-1 w-max ${e?.sender == user?._id ? "self-end" : "self-start"}`}>
+								<div className={`bg-chat-blue p-2 rounded-full  ${e?.sender == user?._id ? "bg-custom-red" : "bg-custom-dark-grey"}`}>
 									{
 										e.file &&
 										<Link href={e.file.url ? e.file.url : `${s3Url}/${e.file.key}`}
@@ -190,18 +184,18 @@ const ChatUser = ({ params }: { params: { id: string } }) => {
 											<p>{e?.file?.name}</p>
 										</Link>
 									}
-									<p className=" text-lg font-bold">
+									<p className="text-center  font-bold">
 										{e.text}
 									</p>
 								</div>
 								<p className={`opacity-50 text-sm ${e.sender == params.id ? "self-start" : "self-end"}`}>
-									{moment(e.createdAt).format("dd MM yyyy HH:mm")}</p>
+									{parseTime(e.createdAt)}</p>
 							</div>
 						))
 					}
 				</div>
 			</div>
-			<form onSubmit={sendMessage} className="flex px-3 gap-2 items-center justify-center w-full h-20">
+			<form onSubmit={sendMessage} className="flex px-3 gap-2 items-center justify-center w-full h-20 border-t-2 border-custom-dark-grey">
 				<div className="flex flex-col w-full items-center justify-center relative">
 					{
 						file &&
@@ -217,15 +211,15 @@ const ChatUser = ({ params }: { params: { id: string } }) => {
 					<input type="text" onChange={(e) => setMessage(e.target.value)}
 						value={message}
 						placeholder="Enter message... "
-						className="w-full items-center text-black h-12 focus:outline-none p-2 rounded-lg"
+						className="w-full items-center text-black bg-custom-dark-grey h-12 focus:outline-none px-3 py-2 rounded-full"
 					/>
 				</div>
 				<input type="file" multiple={false} className="hidden" id="file" onChange={changeFile} />
-				<label htmlFor="file" className="bg-chat-blue p-3 rounded-lg cursor-pointer hover:text-5xl">
+				<label htmlFor="file" className="bg-chat-blue p-3 rounded-full bg-custom-grey cursor-pointer hover:text-5xl">
 					<Icon className="text-2xl" icon="akar-icons:attach" />
 				</label>
-				<button type="submit" className="bg-chat-blue p-3 rounded-lg">
-					<Icon className="text-2xl" icon="fa-solid:paper-plane" />
+				<button type="submit" className="flex items-center justify-center bg-chat-blue p-3 rounded-full bg-custom-red">
+					<Icon className="text-2xl text-white" icon="fa-solid:paper-plane" />
 				</button>
 			</form>
 		</Container>

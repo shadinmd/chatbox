@@ -36,8 +36,8 @@ const Forgot = () => {
             <Navbar />
             <div className='flex flex-col h-full w-full gap-10 pb-10 items-center justify-center'>
                 <div className="flex flex-col gap-5 items-center justify-center">
-                    <p className='text-5xl font-bold'>Forgot password?</p>
-                    <p>
+                    <p className='text-5xl font-bold text-custom-blue'>Forgot password?</p>
+                    <p className='text-custom-blue font-bold'>
                         Enter your email here to recieve a link for resetting your password
                     </p>
                 </div>
@@ -48,14 +48,14 @@ const Forgot = () => {
                     <input
                         {...register("email")}
                         placeholder='Email'
-                        className="rounded-lg text-black px-2 py-2 focus:outline-none w-full"
+                        className="rounded-lg text-black border-2 border-custom-blue px-2 py-2 focus:outline-none w-full"
                         type="text"
                     />
                     {errors.email && <p className='text-chat-red'>{errors.email.message}</p>}
-                    <button className='rounded-lg font-bold px-2 py-2 w-full bg-black' type='submit'>
+                    <button className='rounded-lg font-bold px-2 py-2 w-full bg-custom-red' type='submit'>
                         Send
                     </button>
-                    <Link href={"/app/login"}>
+                    <Link href={"/login"} className='text-custom-blue font-bold'>
                         go back to login ?
                     </Link>
                 </form>

@@ -1,4 +1,3 @@
-import { request } from "express"
 import IRequest from "../interface/request.interface"
 import RequestModel from "../models/request.model"
 
@@ -7,6 +6,16 @@ class RequestRepositroy {
 
 	async create(data: IRequest) {
 		try {
+			const request = await RequestModel.findOne(data)
+
+			if (request) {
+				return {
+					success: true,
+					message: "request send",
+					request
+				}
+			}
+
 			const response = await new RequestModel(data).save()
 			await response.populate("sender")
 			return {
@@ -24,7 +33,14 @@ class RequestRepositroy {
 
 	async findAllRequest(id: string) {
 		try {
-			const response = await RequestModel.find({ reciever: id }).populate({ path: "sender", select: "-password" })
+			const response = await RequestModel.find(
+				{
+					$or: [
+						{ reciever: id },
+						{ sender: id }
+					]
+				}
+			).populate({ path: "sender", select: "-password" })
 			return {
 				success: true,
 				message: "found requests",
@@ -44,6 +60,21 @@ class RequestRepositroy {
 			return {
 				success: true,
 				message: "accpeted  friendshipt request"
+			}
+		} catch (error) {
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
+
+	async reject({ sender, reciever }: { sender: string, reciever: string }) {
+		try {
+			const response = await RequestModel.updateOne({ sender, reciever }, { $set: { status: "REJECTED" } })
+			return {
+				success: true,
+				message: "user rejected"
 			}
 		} catch (error) {
 			return {
@@ -82,6 +113,21 @@ class RequestRepositroy {
 			return {
 				success: true,
 				message: "request updated"
+			}
+		} catch (error) {
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
+
+	async delete(id: string) {
+		try {
+			const response = await RequestModel.deleteOne({ _id: id })
+			return {
+				success: true,
+				message: "request deleted successfully"
 			}
 		} catch (error) {
 			return {

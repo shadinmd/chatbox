@@ -6,6 +6,7 @@ import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { DialogTitle } from "@radix-ui/react-dialog"
+import Api from "@/services/Api"
 
 interface Props {
 	children: React.ReactNode
@@ -19,9 +20,15 @@ const ChangePassword: React.FC<Props> = ({ children }) => {
 		formState: { errors }
 	} = useForm<formType>({ resolver: zodResolver(formSchema) })
 
-	const onSubmit = () => {
+	const onSubmit = async (data: formType) => {
 		try {
-
+			console.log(data)
+			const response = await Api.post("/user/changePass", data)
+			if (response.data.suuccess) {
+				toast.success(response.data.message)
+			} else {
+				toast.error(response.data.message)
+			}
 		} catch (error) {
 			if (isAxiosError(error))
 				if (error.response?.data.message)
@@ -39,8 +46,8 @@ const ChangePassword: React.FC<Props> = ({ children }) => {
 			<DialogTrigger className="flex items-start outline-none">
 				{children}
 			</DialogTrigger>
-			<DialogContent className="bg-chat-black text-white outline-none">
-				<DialogHeader className="text-white font-extrabold text-xl">
+			<DialogContent className="bg-white text-custom-blue outline-none">
+				<DialogHeader className="font-extrabold text-xl">
 					<DialogTitle>
 						Change Password
 					</DialogTitle>
@@ -49,17 +56,24 @@ const ChangePassword: React.FC<Props> = ({ children }) => {
 					<input
 						{...register("password")}
 						type="password"
-						placeholder="password"
-						className="px-3 py-1 text-black outline-none rounded-lg"
+						placeholder="current password"
+						className="px-3 py-1 text-black outline-none rounded-lg border-2"
 					/>
 					{errors.password && <p className="text-red-500">{errors.password.message}</p>}
+					<input
+						{...register("newPassword")}
+						type="password"
+						placeholder="new password"
+						className="px-3 py-1 text-black outline-none rounded-lg border-2"
+					/>
+					{errors.newPassword && <p className="text-red-500">{errors.newPassword.message}</p>}
 					<input
 						{...register("confirmPassword")}
 						type="password"
 						placeholder="Confirm password"
-						className="px-3 py-1 text-black outline-none rounded-lg"
+						className="px-3 py-1 text-black outline-none rounded-lg border-2"
 					/>
-					{errors.password && <p className="text-red-500">{errors.password.message}</p>}
+					{errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword.message}</p>}
 					<button className="rounded-lg px-3 py-1 bg-black text-white" type="submit">
 						Submit
 					</button>
@@ -72,10 +86,11 @@ const ChangePassword: React.FC<Props> = ({ children }) => {
 export default ChangePassword
 
 const formSchema = z.object({
-	password: z.string().min(5, { message: "password need minimum 5 characters" }),
+	password: z.string().min(5, { message: "please enter your password" }),
+	newPassword: z.string().min(5, { message: "password need minimum 5 characters" }),
 	confirmPassword: z.string()
-}).superRefine(({ password, confirmPassword }, ctx) => {
-	if (password != confirmPassword) {
+}).superRefine(({ newPassword, confirmPassword }, ctx) => {
+	if (newPassword != confirmPassword) {
 		ctx.addIssue({
 			code: "custom",
 			message: "passwords don't match",

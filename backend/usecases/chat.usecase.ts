@@ -1,10 +1,6 @@
-import { ReplicationRuleStatus } from "@aws-sdk/client-s3"
-import IRequest from "../interface/request.interface"
 import MessageRepository from "../repository/message.repository"
 import RequestRepositroy from "../repository/request.repository"
-import UsecaseReturn from "../interface/function.interface"
 import ChatRepository from "../repository/chat.repository"
-import ChatModel from "../models/chat.model"
 
 class ChatUsecase {
 	private messageRepository: MessageRepository

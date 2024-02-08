@@ -8,7 +8,7 @@ import authSlice from "@/redux/features/auth/authSlice";
 import { getUser } from "@/redux/features/user/userActions";
 import { useRouter } from "next/navigation";
 import socketSlice from "@/redux/features/socket/socketSlice";
-import { getRequests } from "@/redux/features/chat/chatActions";
+import { getRequests, getChats } from "@/redux/features/chat/chatActions";
 import { toast } from "sonner";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import chatSlice from "@/redux/features/chat/chatSlice";
@@ -34,7 +34,7 @@ const Initializer = ({ children }: { children: React.ReactNode }) => {
 			dispatch(getRequests())
 		} else {
 			setInitializer(true)
-			router.push("/app/login")
+			router.push("/login")
 		}
 	}, [])
 
@@ -42,13 +42,15 @@ const Initializer = ({ children }: { children: React.ReactNode }) => {
 		if (auth) {
 			dispatch(getRequests())
 			dispatch(getUser())
+			dispatch(getChats())
 		}
 	}, [auth])
 
 	useEffect(() => {
 		const interval = setInterval(() => {
-			if (auth)
+			if (auth) {
 				dispatch(getUser())
+			}
 		}, 5000)
 
 		return () => {
@@ -89,13 +91,16 @@ const Initializer = ({ children }: { children: React.ReactNode }) => {
 				})
 
 				socket.socket?.on("chat:friend:request", (data) => {
-					console.log(data)
 					dispatch(chatSlice.actions.appendRequest(data))
+				})
+
+				socket.socket?.on("chat:friend:cancel", (data) => {
+					console.log("request cancelled")
+					dispatch(chatSlice.actions.deleteRequest(data.id))
 				})
 
 				socket?.socket?.on("connect", async () => {
 					console.log("connected")
-					// socket.socket?.emit("initiate", { id: user._id })
 				})
 			}
 		})()
@@ -103,12 +108,6 @@ const Initializer = ({ children }: { children: React.ReactNode }) => {
 
 	useEffect(() => {
 		if (auth && user?._id && !initialized) {
-			chat.forEach((e) => {
-				if (e.group) {
-					console.log("joining", e)
-					socket.socket?.emit("chat:group:join", { id: e._id })
-				}
-			})
 			socket.socket?.emit("initiate", { id: user._id })
 			setInitializer(true)
 		}

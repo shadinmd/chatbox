@@ -4,7 +4,7 @@ import React from "react"
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 	return (
-		<Container className="bg-black gap-2">
+		<Container className="bg-black">
 			<ChatSideBar />
 			{children}
 		</Container>

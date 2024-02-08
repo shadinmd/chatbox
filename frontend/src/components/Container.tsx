@@ -9,7 +9,7 @@ const Container: React.FC<Props> = ({ children, className, ref }) => {
 
 	return (
 		<div className={cn(
-			"flex items-center justify-center h-full w-full bg-chat-black text-white rounded-3xl", className)} ref={ref} >
+			"flex items-center justify-center h-full w-full bg-white text-white", className)} ref={ref} >
 			{children}
 		</div>
 	)

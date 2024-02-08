@@ -1,4 +1,5 @@
 import IUser from "../interface/user.interface"
+import BcryptRepository from "../repository/bcrypt.repository"
 import JwtRepository from "../repository/jwt.repository"
 import S3Repository from "../repository/s3.repository"
 import UserRepository from "../repository/user.repository"
@@ -7,13 +8,16 @@ class UserUsecase {
 	private userRepository: UserRepository
 	private s3Repostiroy: S3Repository
 	private jwtRepository: JwtRepository
-	constructor(userRepository: UserRepository, s3Repostiroy: S3Repository, jwtRepository: JwtRepository) {
+	private bcryptRepository: BcryptRepository
+
+	constructor(userRepository: UserRepository, s3Repostiroy: S3Repository, jwtRepository: JwtRepository, bcryptRepository: BcryptRepository) {
 		this.userRepository = userRepository
 		this.s3Repostiroy = s3Repostiroy
 		this.jwtRepository = jwtRepository
+		this.bcryptRepository = bcryptRepository
 	}
 
-	async getUsers(search?: { name: string }) {
+	async getUsers(search?: { id: string, name: string }) {
 		try {
 			const response = await this.userRepository.findAllUsers(search)
 			return {
@@ -99,6 +103,54 @@ class UserUsecase {
 					user: response.user || "failed"
 				}
 			}
+		} catch (error) {
+			console.log(error)
+			return {
+				status: 500,
+				data: {
+					success: false,
+					message: "server error"
+				}
+			}
+		}
+	}
+
+	async changePass(password: string, newPassword: string, id: string) {
+		try {
+			const user = await this.userRepository.findById(id)
+			if (!user.user) {
+				return {
+					status: 400,
+					data: {
+						success: false,
+						message: "user not found"
+					}
+				}
+			}
+
+			console.log(user.user)
+			const passCompare = this.bcryptRepository.compare(password, user.user.password!)
+			if (!passCompare) {
+				return {
+					status: 400,
+					data: {
+						success: false,
+						message: "incorrect password"
+					}
+				}
+			}
+
+			const hashedPass = this.bcryptRepository.hash(newPassword)
+			const response = await this.userRepository.changePass(hashedPass, id)
+
+			return {
+				status: response.success ? 200 : 500,
+				data: {
+					success: response.success,
+					message: response.message
+				}
+			}
+
 		} catch (error) {
 			console.log(error)
 			return {

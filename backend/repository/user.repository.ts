@@ -29,12 +29,18 @@ class UserRepository {
 
 	async addFriend(id: string, friendId: string) {
 		try {
-			const response = await UserModel.updateOne({ _id: id }, { $addToSet: { friends: friendId } })
+			console.log(id, friendId)
+			await Promise.all([
+				UserModel.updateOne({ _id: id }, { $addToSet: { friends: friendId } }),
+				UserModel.updateOne({ _id: friendId }, { $addToSet: { friends: id } })
+			])
+
 			return {
 				success: true,
 				message: "friend added"
 			}
 		} catch (error) {
+			console.log(error)
 			return {
 				success: false,
 				message: "database error"
@@ -96,7 +102,7 @@ class UserRepository {
 
 	async findById(id: string) {
 		try {
-			const response = await UserModel.findOne({ _id: id }, { password: false }).populate({ path: "friends", select: "-password" })
+			const response = await UserModel.findOne({ _id: id }).populate({ path: "friends", select: "-password" })
 			return {
 				success: true,
 				message: "fetched user",
@@ -111,13 +117,33 @@ class UserRepository {
 		}
 	}
 
-	async findAllUsers(search?: { name: string }) {
+	async findAllUsersAdmin(search?: { name: string }) {
 		try {
 			let query: any = {}
 			if (search?.name) {
 				query.username = { $regex: search.name, $options: "i" }
 			}
 			const response = await UserModel.find(query, { id: false, password: false })
+			return {
+				success: true,
+				message: "fetched all users",
+				users: response
+			}
+		} catch (error) {
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
+
+	async findAllUsers(search?: { id?: string, name: string }) {
+		try {
+			let query: any = {}
+			if (search?.name) {
+				query.username = { $regex: search.name, $options: "i" }
+			}
+			const response = await UserModel.find({ ...query, blocked: { $nin: [search?.id] } }, { id: false, password: false })
 			return {
 				success: true,
 				message: "fetched all users",
@@ -180,6 +206,63 @@ class UserRepository {
 				message: "user status online changed"
 			}
 		} catch (error) {
+			console.log(error)
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
+
+	async changePass(password: string, id: string) {
+		try {
+			await UserModel.updateOne({ _id: id }, { $set: { password } })
+
+			return {
+				success: true,
+				message: "user password updated"
+			}
+
+		} catch (error) {
+			console.log(error)
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
+
+	async unfriend(id: string, friend: string) {
+		try {
+			Promise.all([
+				UserModel.updateOne({ _id: id }, { $pull: { friends: friend } }),
+				UserModel.updateOne({ _id: friend }, { $pull: { friends: id } })
+			])
+			return {
+				success: true,
+				message: "user unfriended successfully"
+			}
+		} catch (error) {
+			console.log(error)
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
+
+	async block(id: string, friend: string) {
+		try {
+			Promise.all([
+				UserModel.updateOne({ _id: id }, { $pull: { friends: friend }, $addToSet: { blocked: friend } }),
+				UserModel.updateOne({ _id: friend }, { $pull: { friends: id } }),
+			])
+			return {
+				success: true,
+				message: "user unfriended successfully"
+			}
+		} catch (error) {
+			console.log(error)
 			return {
 				success: false,
 				message: "database error"

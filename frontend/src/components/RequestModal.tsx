@@ -1,25 +1,24 @@
 "use client";
 import React from "react"
-import Container from "./Container"
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import { Icon } from "@iconify/react";
+import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "./ui/dialog";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import chatSlice, { IRequest } from "@/redux/features/chat/chatSlice";
+import { Link } from "lucide-react";
 
-interface Props {
-	isOpen: boolean,
-	onClose: Function
-}
+const RequestModal: React.FC = () => {
 
-const RequestModal: React.FC<Props> = ({ isOpen = false, onClose }) => {
-
+	const dispatch: AppDispatch = useDispatch()
 	const socket = useSelector((state: RootState) => state.socket.socket)
 	const currentUser = useSelector((state: RootState) => state.user.user)
 	const requests = useSelector((state: RootState) => state.chat.requests)
 
-	const accept = (id: string) => {
+	const accept = (request: IRequest) => {
 		try {
-			socket?.emit("chat:friend:accept", { id, user: currentUser._id, username: currentUser.username })
+			socket?.emit("chat:friend:accept", { id: request.sender?._id!, user: currentUser._id, username: currentUser.username })
+			dispatch(chatSlice.actions.acceptRequest(request?._id!))
 			console.log("accepted")
 		} catch (error) {
 			console.log(error)
@@ -27,55 +26,44 @@ const RequestModal: React.FC<Props> = ({ isOpen = false, onClose }) => {
 	}
 
 	return (
-		<>
-			{
-				isOpen &&
-				<Container className={`z-10 fixed top-0 left-0 rounded-none h-screen w-screen bg-[#ffffff56] ${isOpen ? "visible" : "hidden"}`}>
-					<Container className="flex flex-col w-[80%] h-[80%] py-10 px-10">
-						<div className="flex w-full">
-							<h2 className="w-full">
-								Requests
-							</h2>
-							<button className="justify-self-center" onClick={(e) => onClose()} >
-								<Icon className="text-chat-red text-2xl" icon="octicon:x-12" />
-							</button>
-						</div>
-						<Container className="flex justify-start flex-col p-10">
-							{
-								requests &&
-								requests?.map((e, i) => (
-									<div key={i} className="flex items-center justify-between text-black bg-chat-blue w-full rounded-lg px-4 py-3 font-bold">
-										<p>
-											{e?.sender?.username}
-										</p>
-										<div className="flex items-center gap-4">
-											<Link className="flex gap-2 items-center" href={`/app/user/${e.sender?._id}`}>
-												View
-												<Icon className="text-lg" icon="ph:arrow-square-out-bold" />
-											</Link>
-											{
-												e.status == "WAITING" ?
-													<button onClick={(event) => accept(e?.sender?._id!)} className="bg-chat-green rounded-lg px-2 py-1">
-														accept
-													</button>
-													:
-													e.status == "ACCEPTED" ?
-														<Link className="bg-chat-green rounded-lg px-2 py-1" href={`/app/chat/`}>
-															Chat
-														</Link>
-														: <p className="text-chat-red px-2 py-1">
-															Rejected
-														</p>
-											}
-										</div>
+		<Dialog>
+			<DialogTrigger className="outline-none">
+				<Icon icon="ion:mail-unread" className="text-3xl text-custom-red" />
+			</DialogTrigger>
+			<DialogContent className="flex flex-col gap-2 h-96 w-full">
+				<DialogHeader>
+					<DialogTitle className="font-extrabold text-xl">
+						Requests
+					</DialogTitle>
+				</DialogHeader>
+				<div id="request-modal" className="flex items-start justify-center overflow-auto w-full h-full">
+					<div className="flex flex-col gap-2 items-center justify-start w-full ">
+						{requests.filter((e) => e.reciever == currentUser?._id && e.status == "WAITING").map((e, i) => (
+							<div
+								key={i}
+								className="flex items-center justify-between w-full h-12 p-2 rounded-lg bg-custom-red"
+							>
+								<div className="">
+									<p className="font-bold">
+										{e.sender?.username}
+									</p>
+								</div>
+								<div className="flex items-center">
+									<div className="flex gap-2 items-center">
+										<Link href={`/app/user/${e?.sender}`} className="bg-custom-blue text-white rounded-lg p-1">
+											profile
+										</Link>
+										<button onClick={() => accept(e)} className="bg-custom-blue text-white rounded-lg p-1">
+											accept
+										</button>
 									</div>
-								))
-							}
-						</Container>
-					</Container>
-				</Container>
-			}
-		</>
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
+			</DialogContent>
+		</Dialog>
 	)
 }
 

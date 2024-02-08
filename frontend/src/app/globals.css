@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 body::-webkit-scrollbar {
-	background-color: #101010;
+	background-color: white;
 	width: 5px;
 }
 
 body::-webkit-scrollbar-thumb {
-	background-color: #397FFF;
+	background-color: #FD5050;
 }
 
 #chat-div::-webkit-scrollbar-thumb {
@@ -17,6 +17,15 @@ body::-webkit-scrollbar-thumb {
 
 #chat-div::-webkit-scrollbar {
 	width: 5px;
+}
+
+#request-modal::-webkit-scrollbar {
+	width: 5px;
+	background: white;
+}
+
+#request-modal::-webkit-scrollbar-thumb {
+	background: #FD5050;
 }
 
 @layer base {

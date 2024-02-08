@@ -9,20 +9,20 @@ const Navbar = () => {
 		if (localStorage.getItem("token")) {
 			router.push("/app/chat")
 		} else {
-			router.push("/app/login")
+			router.push("/login")
 		}
 	}
 
 	return (
-		<header className="flex w-full bg-white h-20 px-20 items-center justify-between">
-			<Link href="/" className="text-chat-blue text-2xl font-extrabold">
+		<header className="flex w-full bg-custom-blue h-20 px-20 items-center justify-between">
+			<Link href="/" className="text-white text-2xl font-extrabold">
 				ChatBox
 			</Link>
 			<div className="flex items-center justify-center gap-4 text-chat-blue font-bold text-base">
-				<Link href={"/download"} className="text-white bg-chat-blue rounded-lg px-4 py-2">
+				<Link href={"/download"} className="text-white hover:text-custom-red transition-all rounded-lg px-4 py-2">
 					Download
 				</Link>
-				<button onClick={getStarted} className="bg-chat-blue text-white px-4 py-2  rounded-lg">
+				<button onClick={getStarted} className="bg-custom-red  text-white px-4 py-2  rounded-lg">
 					Get Started
 				</button>
 			</div>

@@ -5,7 +5,7 @@ import Sidebar from "@/components/Sidebar"
 const Layout = ({ children }: { children: React.ReactNode }) => {
 
 	return (
-		<div className="flex gap-2 items-center justify-between w-screen h-screen p-2 bg-black">
+		<div className="flex items-center justify-between w-screen h-screen">
 			<Initializer>
 				<Sidebar />
 				{children}

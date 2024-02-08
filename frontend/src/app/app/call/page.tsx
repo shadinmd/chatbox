@@ -107,11 +107,22 @@ const Call = () => {
 		setPeer(newPeer)
 	}, [socket, callAccepted, localStream, currentUser._id, userParam, currentUser.username, remoteVideoRef, remoteStream])
 
-	const stopLocalStream = () => {
+	const toggleVideo = () => {
 		if (localStream) {
-			const tracks = localStream.getTracks()
-			tracks.forEach(e => e.stop())
+			localStream.getVideoTracks().forEach(track => {
+				track.enabled = !track.enabled; // Toggle the enabled state of the video track
+			});
 		}
+		setVideo((prev) => !prev)
+	}
+
+	const toggleMic = () => {
+		if (localStream) {
+			localStream.getAudioTracks().forEach(track => {
+				track.enabled = !track.enabled; // Toggle the enabled state of the video track
+			});
+		}
+		setMic((prev) => !prev)
 	}
 
 	const dontStartCall = () => {
@@ -144,14 +155,14 @@ const Call = () => {
 				<button onClick={() => hangupCall()} className="bg-chat-red text-black text-4xl p-3 rounded-full">
 					<Icon icon={"mdi:phone-hangup"} />
 				</button>
-				<button className="bg-white text-black text-4xl p-3 rounded-full" onClick={() => setVideo(!video)}>
+				<button className="bg-white text-black text-4xl p-3 rounded-full" onClick={() => toggleVideo()}>
 					{
 						video ?
 							<Icon icon={"mdi:video"} /> :
 							<Icon icon={"mdi:video-off"} />
 					}
 				</button>
-				<button className="bg-white text-black text-4xl p-3 rounded-full" onClick={() => setMic(!mic)}>
+				<button className="bg-white text-black text-4xl p-3 rounded-full" onClick={() => toggleMic()}>
 					{
 						mic ?
 							<Icon icon={"material-symbols:mic"} /> :

@@ -11,13 +11,14 @@ class AdminUsecase {
 	async getAllUsers(search?: { name: string }) {
 		try {
 			console.log(search)
-			const response = await this.userRepository.findAllUsers(search)
+			const response = await this.userRepository.findAllUsersAdmin(search)
+			console.log(response?.users)
 			return {
 				status: response.success ? 200 : 500,
 				data: {
 					success: response.success,
 					message: response.message,
-					users: response.users || "empty"
+					users: response.users || []
 				}
 			}
 		} catch (error) {

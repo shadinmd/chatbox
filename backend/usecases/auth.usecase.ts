@@ -37,6 +37,8 @@ class AuthUsecase {
 			const hashedPassword = this.bcryptRepostiroy.hash(data.password)
 			const verificationToken = this.cryptoRepository.generateVerificationToken()
 			const response = await this.userRepository.create({ ...data, password: hashedPassword, verificationToken })
+			await this.mailRepository.sendVerificationMail(data.email, `${process.env.FRONTEND_URL}/verify?token=${verificationToken}&email=${data.email}`)
+
 			return {
 				status: response.success ? 200 : 500,
 				data: {
@@ -96,7 +98,6 @@ class AuthUsecase {
 
 	async sendVerificationMail(email: string) {
 		try {
-			console.log(email)
 			const response = await this.userRepository.getVerificationToken(email)
 			if (response.success && response.email && response.token) {
 				await this.mailRepository.sendVerificationMail(response?.email, `${process.env.FRONTEND_URL}/verify?token=${response.token}&email=${response.email}`)

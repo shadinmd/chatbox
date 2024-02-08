@@ -8,7 +8,7 @@ const Info = () => {
 	const user = useSelector((state: RootState) => state.user.user)
 
 	return (
-		<Container className="flex flex-col gap-10 items-start justify-start py-20">
+		<Container className="flex flex-col gap-10 items-center justify-center py-20 text-custom-blue">
 			<p className="font-extrabold text-3xl">
 				Info
 			</p>

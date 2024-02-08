@@ -11,7 +11,6 @@ const adminController = new AdminController(adminUsecase)
 
 router.route("/user")
 	.get(adminAuthorizationMiddleware, (req: Request, res: Response) => adminController.getAllUsers(req, res))
-	.post()
 
 router.route("/user/:id")
 	.get(adminAuthorizationMiddleware, (req: Request, res: Response) => adminController.getUserDetails(req, res))

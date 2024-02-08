@@ -10,7 +10,7 @@ class BcryptRepository {
 		return hash
 	}
 
-	compare(data: string, hash: string) {
+	compare(data: string, hash: string): boolean {
 		const result = bcrypt.compareSync(data, hash)
 		return result
 	}

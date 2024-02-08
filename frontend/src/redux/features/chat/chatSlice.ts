@@ -33,11 +33,12 @@ export interface IChat {
 	description?: string,
 	latestMessage?: string,
 	latestMessageTime?: Date,
+	newMessages?: number,
 	members?: { user: IUser, role: string }[]
 	group?: boolean
 }
 
-interface IRequest {
+export interface IRequest {
 	_id?: string,
 	sender?: IUser,
 	reciever?: string,
@@ -65,10 +66,34 @@ const chatSlice = createSlice({
 	name: "chat",
 	initialState,
 	reducers: {
+		acceptRequest: (state, { payload }: { payload: string }) => {
+			const newRequests = state.requests.map((e) => {
+				if (e._id == payload) {
+					e.status = "ACCEPTED"
+					return e
+				} else {
+					return e
+				}
+			})
+			state.requests = newRequests
+		},
 		appendRequest: (state, { payload }) => {
+
+			if (typeof payload.sender != "string")
+				return {
+					...state,
+					requests: [...state.requests, payload]
+				}
+			else
+				return state
+		},
+		deleteRequest: (state, { payload }) => {
+			console.log("paying the load", payload)
+			const newRequests = state.requests.filter((e) => e._id != payload)
+			console.log(newRequests)
 			return {
 				...state,
-				requests: [...state.requests, payload]
+				requests: newRequests
 			}
 		},
 		updateLatestMessage: (state, { payload }: { payload: { id: string, message: string, time: Date } }) => {

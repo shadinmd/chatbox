@@ -12,18 +12,18 @@ const CallModal: React.FC<Props> = ({ open, onOpenChange, onAccept, onReject }) 
 		<AlertDialog onOpenChange={onOpenChange} open={open} >
 			<AlertDialogTrigger>
 			</AlertDialogTrigger>
-			<AlertDialogContent className="bg-black text-white">
+			<AlertDialogContent className="bg-white text-custom-blue">
 				<AlertDialogHeader>
 					start call?
 				</AlertDialogHeader>
-				<AlertDialogDescription className="text-white">
+				<AlertDialogDescription className="">
 					are you ready to start the call
 				</AlertDialogDescription>
 				<AlertDialogFooter>
-					<AlertDialogAction onClick={(e) => onAccept()} className="outline-none bg-chat-green text-black hover:bg-green-600">
+					<AlertDialogAction onClick={(e) => onAccept()} className="outline-none bg-green-500 text-black hover:bg-green-600">
 						yes
 					</AlertDialogAction>
-					<AlertDialogCancel onClick={(e) => onReject()} className="outline-none bg-chat-red text-black">
+					<AlertDialogCancel onClick={(e) => onReject()} className="outline-none bg-red-500 text-black">
 						no
 					</AlertDialogCancel>
 				</AlertDialogFooter>

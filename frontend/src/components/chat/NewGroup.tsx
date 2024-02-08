@@ -2,11 +2,10 @@ import React from "react"
 import {
 	Dialog,
 	DialogTrigger,
-	DialogTitle,
 	DialogFooter,
 	DialogHeader,
 	DialogContent,
-	DialogDescription
+	DialogTitle,
 } from "../ui/dialog"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { useForm } from "react-hook-form"
@@ -25,7 +24,7 @@ interface Props {
 type formType = z.infer<typeof newGroupFormSchema>
 type className = string
 
-const inputStyle: className = "px-3 py-1 rounded-lg outline-none border border-black text-black"
+const inputStyle: className = "px-3 py-1 rounded-lg outline-none border-2 border-custom-blue text-black"
 
 const NewGroup: React.FC<Props> = ({ open, onOpenChange }) => {
 
@@ -56,11 +55,15 @@ const NewGroup: React.FC<Props> = ({ open, onOpenChange }) => {
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogTrigger>
-				<Icon icon={"mdi:users-plus"} className="text-4xl text-chat-green outline-none" />
+			<DialogTrigger className="outline-none">
+				<Icon icon={"mdi:users-plus"} className="text-4xl text-custom-blue outline-none" />
 			</DialogTrigger>
-			<DialogContent className="bg-chat-black text-white">
-				<DialogHeader>Create new group</DialogHeader>
+			<DialogContent className="bg-white text-custom-blue">
+				<DialogHeader>
+					<DialogTitle className="font-bold">
+						Create new group
+					</DialogTitle>
+				</DialogHeader>
 				<form onSubmit={handleSubmit(onFormSubmit)} className="flex flex-col gap-2">
 					<input
 						{...register("name")}
@@ -68,7 +71,7 @@ const NewGroup: React.FC<Props> = ({ open, onOpenChange }) => {
 						className={inputStyle}
 						placeholder="Name"
 					/>
-					{errors.name && <p className="text-chat-red">{errors.name.message}</p>}
+					{errors.name && <p className="text-custom-red">{errors.name.message}</p>}
 					<input
 						{...register("description")}
 						type="text"
@@ -76,7 +79,7 @@ const NewGroup: React.FC<Props> = ({ open, onOpenChange }) => {
 						placeholder="Description"
 					/>
 					{errors.description && <p className="text-chat-red">{errors.description.message}</p>}
-					<button type="submit" className="bg-black font-bold py-1 rounded-lg">
+					<button type="submit" className="bg-custom-red font-bold py-1 rounded-lg">
 						Create
 					</button>
 				</form>
