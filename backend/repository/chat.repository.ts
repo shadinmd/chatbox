@@ -54,8 +54,8 @@ class ChatRepository {
 					$set: {
 						latestMessage: message,
 						latestMessageTime: time,
-						$inc: { newMessages: 1 }
-					}
+					},
+					$inc: { newMessages: 1 }
 				})
 			return {
 				success: true,
