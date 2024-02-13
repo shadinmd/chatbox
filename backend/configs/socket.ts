@@ -8,6 +8,7 @@ import S3Repository from "../repository/s3.repository"
 import ChatModel from "../models/chat.model"
 import ChatRepository from "../repository/chat.repository"
 import IChat from "../interface/chat.interface"
+import socketAuthorize from "../lib/socketAuthorize"
 
 
 const chatRepository = new ChatRepository()
@@ -43,6 +44,8 @@ const configureSocket = (server: http.Server) => {
 	io.on("connect", (socket) => {
 
 		socket.on("initiate", async (data) => {
+			const id = socketAuthorize(data.token, socket)
+			if (!id) return
 			await userRepository.setOnlineStatus(data.id, true)
 			connections.push({ id: data.id, socket: socket.id })
 			const user = await userRepository.findById(data.id)

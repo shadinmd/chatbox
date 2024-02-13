@@ -61,6 +61,11 @@ const Initializer = ({ children }: { children: React.ReactNode }) => {
 	useEffect(() => {
 		(async () => {
 			if (auth) {
+
+				socket?.socket?.on("connect", async () => {
+					console.log("connected")
+				})
+
 				socket.socket?.on("call:start", ({ offer, caller, callerName }) => {
 					console.log(offer)
 					dispatch(socketSlice.actions.setOffer(offer))
@@ -99,8 +104,9 @@ const Initializer = ({ children }: { children: React.ReactNode }) => {
 					dispatch(chatSlice.actions.deleteRequest(data.id))
 				})
 
-				socket?.socket?.on("connect", async () => {
-					console.log("connected")
+				socket.socket?.on("unauthorized", (data) => {
+					localStorage.removeItem("token")
+					router.push("/login")
 				})
 			}
 		})()
@@ -108,7 +114,7 @@ const Initializer = ({ children }: { children: React.ReactNode }) => {
 
 	useEffect(() => {
 		if (auth && user?._id && !initialized) {
-			socket.socket?.emit("initiate", { id: user._id })
+			socket.socket?.emit("initiate", { token: localStorage.getItem("token"), id: user._id })
 			setInitializer(true)
 		}
 	}, [user])

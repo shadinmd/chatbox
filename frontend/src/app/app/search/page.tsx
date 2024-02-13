@@ -64,8 +64,8 @@ const Search = () => {
 									className="bg-custom-blue rounded-lg w-full h-72 flex flex-col gap-2 p-2 items-center justify-center"
 								>
 									{
-										e.image ?
-											<img src={e.image} className="h-56 w-56 rounded-lg" alt="" /> :
+										e?.image ?
+											<img src={e?.image} className="h-56 w-56 rounded-lg" alt="" /> :
 											<div className="flex items-center justify-center h-full w-full">
 												<Icon icon="mdi:person" className="text-custom-red text-8xl" />
 											</div>

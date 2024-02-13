@@ -13,6 +13,7 @@ const socketAuthorize = (token: string, socket: Socket) => {
 		return id
 	} catch (error) {
 		socket.emit("unauthorized")
+		return
 	}
 }
 
