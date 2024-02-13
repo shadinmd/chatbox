@@ -50,7 +50,7 @@ const RequestModal: React.FC = () => {
 								</div>
 								<div className="flex items-center">
 									<div className="flex gap-2 items-center">
-										<Link href={`/app/user/${e?.sender}`} className="bg-custom-blue text-white rounded-lg p-1">
+										<Link href={`/app/user/${e?.sender?._id}`} className="bg-custom-blue text-white rounded-lg p-1">
 											profile
 										</Link>
 										<button onClick={() => accept(e)} className="bg-custom-blue text-white rounded-lg p-1">
