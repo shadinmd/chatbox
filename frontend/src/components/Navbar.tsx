@@ -1,6 +1,18 @@
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+
+	const router = useRouter()
+
+	const getStarted = () => {
+		if (localStorage.getItem("token")) {
+			router.push("/app/chat")
+		} else {
+			router.push("/login")
+		}
+	}
+
 	return (
 		<header className="flex w-full bg-custom-blue h-20 px-20 items-center justify-between">
 			<Link href="/" className="text-white text-2xl font-extrabold">
@@ -10,9 +22,9 @@ const Navbar = () => {
 				<Link href={"/download"} className="text-white hover:text-custom-red transition-all rounded-lg px-4 py-2">
 					Download
 				</Link>
-				<Link href={localStorage.getItem("token") ? "/app/chat" : "/login"} className="bg-custom-red  text-white px-4 py-2  rounded-lg">
+				<button onClick={() => getStarted()} className="bg-custom-red  text-white px-4 py-2  rounded-lg">
 					Get Started
-				</Link>
+				</button>
 			</div>
 		</header>
 	)
