@@ -54,29 +54,29 @@ const Search = () => {
 			</div>
 			<div className="w-full h-5/6 max-h-full grid grid-cols-2 lg:grid-cols-4 grid-rows-3 gap-2 p-2 overflow-y-auto">
 				{
-					users &&
-					users.map((e, i) =>
-						e?._id != currentUser?._id ?
-							(
-								<Link
-									key={i}
-									href={`/app/user/${e._id}`}
-									className="bg-custom-blue rounded-lg w-full h-72 flex flex-col gap-2 p-2 items-center justify-center"
-								>
-									{
-										e?.image ?
-											<img src={e?.image} className="h-56 w-56 rounded-lg" alt="" /> :
-											<div className="flex items-center justify-center h-full w-full">
-												<Icon icon="mdi:person" className="text-custom-red text-8xl" />
-											</div>
-									}
-									<p className="text-lg font-bold text-left w-full">{e.username}</p>
-								</Link>
-							) :
-							(
-								<div key={i} hidden={true}></div>
-							)
-					)
+					users.length > 0 ?
+						users.map((e, i) =>
+						(
+							<Link
+								key={i}
+								href={`/app/user/${e._id}`}
+								className="bg-custom-blue rounded-lg w-full h-72 flex flex-col gap-2 p-2 items-center justify-center"
+							>
+								{
+									e?.image ?
+										<img src={e?.image} className="h-56 w-56 rounded-lg" alt="" /> :
+										<div className="flex items-center justify-center h-full w-full">
+											<Icon icon="mdi:person" className="text-custom-red text-8xl" />
+										</div>
+								}
+								<p className="text-lg font-bold text-left w-full">{e.username}</p>
+							</Link>
+						)
+						) : (
+							<div className="text-red-500 font-bold">
+								no users found
+							</div>
+						)
 				}
 			</div>
 		</Container>

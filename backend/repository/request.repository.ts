@@ -130,6 +130,24 @@ class RequestRepositroy {
 				message: "request deleted successfully"
 			}
 		} catch (error) {
+			console.log(error)
+			return {
+				success: false,
+				message: "database error"
+			}
+		}
+	}
+
+	async deleteByUsers(id: string, user: string) {
+		try {
+			const response = await RequestModel.deleteOne({
+				$or: [
+					{ sender: id, reciever: user },
+					{ sender: user, reciever: id }
+				]
+			})
+		} catch (error) {
+			console.log(error)
 			return {
 				success: false,
 				message: "database error"

@@ -12,7 +12,7 @@ export interface IUser {
 	online: boolean,
 	lastOnline: Date,
 	friends: IUser[],
-	blocked: any[],
+	blocked: IUser[],
 	createdAt: Date,
 	updatedAt: Date
 }

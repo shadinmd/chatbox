@@ -24,6 +24,7 @@ const User = ({ params }: { params: { id: string } }) => {
 	const [loading, setLoading] = useState(true)
 	const [requestRecieved, setRequestRecieved] = useState(false)
 	const [requestSend, setRequestSend] = useState(false)
+	const [blocked, setBlocked] = useState(false)
 
 	useEffect(() => {
 		if (requests) {
@@ -35,6 +36,13 @@ const User = ({ params }: { params: { id: string } }) => {
 			}
 		}
 	}, [requests, currentUser])
+
+	useEffect(() => {
+		const search = currentUser?.blocked?.find((e) => e?._id == params.id)
+		if (search) {
+			setBlocked(true)
+		}
+	}, [user, currentUser])
 
 	useEffect(() => {
 		(async () => {
@@ -61,7 +69,7 @@ const User = ({ params }: { params: { id: string } }) => {
 	}, [])
 
 	useEffect(() => {
-		if (currentUser?.friends?.find((e) => e._id == params.id)) {
+		if (currentUser?.friends?.find((e) => e?._id == params.id)) {
 			setFriend(true)
 		}
 	}, [currentUser])
@@ -110,6 +118,15 @@ const User = ({ params }: { params: { id: string } }) => {
 		}
 	}
 
+	const unBlock = async (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
+		try {
+			socket?.emit("chat:friend:unblock", { id: params.id })
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
 	return (
 		<Container className="flex-col gap-5 items-center justify-center text-custom-blue">
 			<Link className="text-3xl font-bold absolute top-10 left-32" href="/app/search">
@@ -152,9 +169,13 @@ const User = ({ params }: { params: { id: string } }) => {
 											<button onClick={(e) => cancelRequest(requests.find((e) => e.reciever == params.id)?._id!)} className="px-4 py-2 rounded-lg bg-custom-red text-white">
 												Cancel Request
 											</button> :
-											<button onClick={requestFriend} className="px-4 py-2 rounded-lg bg-custom-red text-white">
-												Request
-											</button>
+											blocked ?
+												<button onClick={unBlock} className="px-4 py-2 rounded-lg bg-custom-red text-white">
+													Un Block
+												</button> :
+												<button onClick={requestFriend} className="px-4 py-2 rounded-lg bg-custom-red text-white">
+													Request
+												</button>
 							}
 
 						</div>

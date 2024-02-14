@@ -9,6 +9,7 @@ import NewGroup from "./NewGroup";
 import { getChats } from "@/redux/features/chat/chatActions";
 import parseTime from "@/utils/timeParser";
 import { usePathname } from "next/navigation";
+import parseMessage from "@/utils/messageParser";
 
 const ChatSideBar = () => {
 
@@ -18,7 +19,7 @@ const ChatSideBar = () => {
 	const pathName = usePathname()
 	const [selectedChat, setSelectedChat] = useState("")
 	const [groupInitiated, setGroupInitiated] = useState(false)
-	const [sortedChats, setSortedChats]= useState()
+	const [sortedChats, setSortedChats] = useState()
 
 	const chats = useSelector((state: RootState) => state.chat.chats)
 	const currentUser = useSelector((state: RootState) => state.user.user)
@@ -38,7 +39,7 @@ const ChatSideBar = () => {
 			socket?.emit("groups:init", { groups })
 			setGroupInitiated(true)
 		}
-		
+
 	}, [chats])
 
 	return (
@@ -70,7 +71,7 @@ const ChatSideBar = () => {
 												{e.groupName}
 											</p>
 											<p className="text-xs text-custom-blue opacity-60">
-												{e.latestMessage || "no new messages"}
+												{e.latestMessage ? parseMessage(e.latestMessage) : "no new messages"}
 											</p>
 										</div>
 									</div>
@@ -91,7 +92,7 @@ const ChatSideBar = () => {
 												{e?.members?.find((item) => item?.user?._id != currentUser?._id)?.user?.username}
 											</p>
 											<p className="text-xs opacity-60">
-												{e.latestMessage || "no new messages"}
+												{e.latestMessage ? parseMessage(e.latestMessage) : "no new messages"}
 											</p>
 										</div>
 									</div>

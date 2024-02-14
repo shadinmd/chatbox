@@ -10,7 +10,9 @@ const createServer = () => {
 	app.use(express.json())
 	app.use(express.urlencoded({ extended: true }))
 	app.use(morgan("dev"))
-	app.use(cors())
+	app.use(cors({
+		origin: "*"
+	}))
 
 	return app
 }

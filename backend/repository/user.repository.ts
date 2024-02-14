@@ -102,7 +102,9 @@ class UserRepository {
 
 	async findById(id: string) {
 		try {
-			const response = await UserModel.findOne({ _id: id }).populate({ path: "friends", select: "-password" })
+			const response = await UserModel.findOne({ _id: id })
+				.populate({ path: "friends", select: "-password" })
+				.populate({ path: "blocked", select: "-password" })
 			return {
 				success: true,
 				message: "fetched user",
@@ -137,13 +139,13 @@ class UserRepository {
 		}
 	}
 
-	async findAllUsers(search?: { id?: string, name: string }) {
+	async findAllUsers(id: string, search?: { name: string }) {
 		try {
 			let query: any = {}
 			if (search?.name) {
 				query.username = { $regex: search.name, $options: "i" }
 			}
-			const response = await UserModel.find({ ...query, blocked: { $nin: [search?.id] } }, { id: false, password: false })
+			const response = await UserModel.find({ ...query, blocked: { $nin: [id] }, _id: { $ne: id } }, { id: false, password: false })
 			return {
 				success: true,
 				message: "fetched all users",
@@ -266,6 +268,22 @@ class UserRepository {
 			return {
 				success: false,
 				message: "database error"
+			}
+		}
+	}
+
+	async unBock(id: string, user: string) {
+		try {
+			const response = await UserModel.updateOne({ _id: id }, { $pull: { blocked: user } })
+			return {
+				success: false,
+				message: "user unblock successfull"
+			}
+		} catch (error) {
+			console.log(error)
+			return {
+				success: false,
+				mesage: "database error"
 			}
 		}
 	}

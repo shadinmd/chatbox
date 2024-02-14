@@ -17,9 +17,9 @@ class UserUsecase {
 		this.bcryptRepository = bcryptRepository
 	}
 
-	async getUsers(search?: { id: string, name: string }) {
+	async getUsers(id: string, search: { name: string }) {
 		try {
-			const response = await this.userRepository.findAllUsers(search)
+			const response = await this.userRepository.findAllUsers(id, search)
 			return {
 				status: response.success ? 200 : 500,
 				data: {

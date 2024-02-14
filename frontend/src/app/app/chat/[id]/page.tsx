@@ -80,6 +80,7 @@ const ChatUser = ({ params }: { params: { id: string } }) => {
 		data.username = user?.username
 		data.to = friend?._id
 		data.group = chat?.group
+		console.log(data)
 		dispatch(chatSlice.actions.updateLatestMessage({ id: data.chat, message: data.text || data.file.name, time: new Date(Date.now()) }))
 
 		if (message || file) {

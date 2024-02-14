@@ -12,6 +12,7 @@ import { getRequests, getChats } from "@/redux/features/chat/chatActions";
 import { toast } from "sonner";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import chatSlice from "@/redux/features/chat/chatSlice";
+import parseMessage from "@/utils/messageParser";
 
 const Initializer = ({ children }: { children: React.ReactNode }) => {
 
@@ -25,7 +26,8 @@ const Initializer = ({ children }: { children: React.ReactNode }) => {
 	const chat = useSelector((state: RootState) => state.chat.chats)
 
 	useEffect(() => {
-		dispatch(socketSlice.actions.initiate())
+		if (!socket.socket)
+			dispatch(socketSlice.actions.initiate())
 	}, [])
 
 	useEffect(() => {
@@ -33,7 +35,6 @@ const Initializer = ({ children }: { children: React.ReactNode }) => {
 			dispatch(authSlice.actions.setLoggedIn(true))
 			dispatch(getRequests())
 		} else {
-			setInitializer(true)
 			router.push("/login")
 		}
 	}, [])
@@ -87,12 +88,13 @@ const Initializer = ({ children }: { children: React.ReactNode }) => {
 				})
 
 				socket.socket?.on("message:recieve", (data) => {
+					console.log(data)
 					dispatch(chatSlice.actions.updateLatestMessage({ id: data.chat, message: data.text || data.file.name, time: new Date(Date.now()) }))
 				})
 
 				socket?.socket?.on("noti:recieve", (data) => {
 					if (data.status == "success")
-						toast("message", { description: data.message, position: "top-right" })
+						toast("message", { description: parseMessage(data.message), position: "top-right" })
 				})
 
 				socket.socket?.on("chat:friend:request", (data) => {
@@ -114,10 +116,11 @@ const Initializer = ({ children }: { children: React.ReactNode }) => {
 
 	useEffect(() => {
 		if (auth && user?._id && !initialized) {
+			console.log("initializing", user._id)
 			socket.socket?.emit("initiate", { token: localStorage.getItem("token"), id: user._id })
 			setInitializer(true)
 		}
-	}, [user])
+	}, [user, auth])
 
 	return (
 		<>

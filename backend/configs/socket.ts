@@ -46,6 +46,7 @@ const configureSocket = (server: http.Server) => {
 		socket.on("initiate", async (data) => {
 			const id = socketAuthorize(data.token, socket)
 			if (!id) return
+			console.log(data)
 			await userRepository.setOnlineStatus(data.id, true)
 			connections.push({ id: data.id, socket: socket.id })
 			const user = await userRepository.findById(data.id)
@@ -100,6 +101,9 @@ const configureSocket = (server: http.Server) => {
 			}
 		})
 
+		socket.on("chat:friend:unblock", async (data) => {
+		})
+
 		socket.on("chat:friend:accept", async (data) => {
 			try {
 				await requestRepositroy.accept({ sender: data.id, reciever: data.user })
@@ -147,6 +151,7 @@ const configureSocket = (server: http.Server) => {
 		})
 
 		socket.on("message:send", async (data) => {
+			console.log(data)
 			const currentUser = getUserId(socket.id)
 			let fileRespone: any
 			if (data.file) {

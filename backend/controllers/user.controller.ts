@@ -17,10 +17,7 @@ class UserController {
 			const currenUser = await this.userUsecase.currentUser(authorization as string)
 			const { name } = req.query
 			console.log(name)
-			const response = await this.userUsecase.getUsers({
-				id: currenUser?.data?.user?._id!,
-				name: name as string
-			})
+			const response = await this.userUsecase.getUsers(currenUser.data.user?.id, { name: name as string })
 			res.status(response.status).send(response.data)
 		} catch (error) {
 			res.status(500).send({
