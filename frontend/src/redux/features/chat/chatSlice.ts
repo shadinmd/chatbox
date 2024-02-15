@@ -34,7 +34,7 @@ export interface IChat {
 	latestMessage?: string,
 	latestMessageTime?: Date,
 	newMessages?: number,
-	members?: { user: IUser, role: string }[]
+	members?: { user: IUser, role: string, unread: number }[]
 	group?: boolean
 }
 

@@ -96,12 +96,20 @@ const ChatSideBar = () => {
 											</p>
 										</div>
 									</div>
-									{
-										e.latestMessage &&
-										<p className="text-xs">
-											{parseTime(e.latestMessageTime!)}
-										</p>
-									}
+									<div className="flex flex-col items-center">
+										{
+											(e?.members?.find((e) => e?.user?._id == currentUser?._id)!)?.unread > 0 &&
+											<p className="flex items-center text-white text-xs justify-center font-bold rounded-full bg-green-500 w-[20px] h-[20px]">
+												{e?.members?.find((e) => e?.user?._id == currentUser?._id)?.unread}
+											</p>
+										}
+										{
+											e.latestMessage &&
+											<p className="text-xs">
+												{parseTime(e.latestMessageTime!)}
+											</p>
+										}
+									</div>
 								</Link>
 						)) :
 						<Link href={"/app/search"} className="text-custom-blue h-full flex flex-col items-center justify-center">
