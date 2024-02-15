@@ -32,6 +32,10 @@ const getSocketId = (id: string) => {
 		return false
 }
 
+const newConnection = ({ }) => {
+
+}
+
 const configureSocket = (server: http.Server) => {
 	const io = new scoket.Server(server, {
 		cors: {
@@ -50,11 +54,6 @@ const configureSocket = (server: http.Server) => {
 			await userRepository.setOnlineStatus(data.id, true)
 			connections.push({ id: data.id, socket: socket.id })
 			const user = await userRepository.findById(data.id)
-			user.user?.friends?.forEach((e: any) => {
-				const socketId = getSocketId(e?._id!)
-				if (socketId)
-					io.to(socketId).emit("friend:online", data)
-			})
 		})
 
 		socket.on("chat:friend:request", async (data) => {
@@ -102,13 +101,20 @@ const configureSocket = (server: http.Server) => {
 		})
 
 		socket.on("chat:friend:unblock", async (data) => {
+			const id = getUserId(socket.id)
+			if (id) {
+				const currentUser = await userRepository.findById(id)
+				userRepository.unBock(currentUser?.user?._id!, data.id)
+				requestRepositroy.deleteByUsers(data.id, currentUser?.user?._id!)
+			}
 		})
 
 		socket.on("chat:friend:accept", async (data) => {
 			try {
 				await requestRepositroy.accept({ sender: data.id, reciever: data.user })
 				await new ChatModel({
-					group: false, members: [
+					group: false,
+					members: [
 						{ user: data.id, role: "user" },
 						{ user: data.user, role: "user" }
 					]
@@ -174,7 +180,7 @@ const configureSocket = (server: http.Server) => {
 				file: fileRespone?.file?._id
 			})
 
-			await chatRepository.changeLatestMessage(data.chat, data.text || data.file.name)
+			await chatRepository.changeLatestMessage(data.chat, data.text || data.file.name, currentUser!)
 			const message = response.data
 
 			if (data.group) {
