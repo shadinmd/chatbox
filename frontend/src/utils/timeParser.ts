@@ -15,9 +15,9 @@ function parseTime(time: Date) {
 	} else if (duration.asDays() < 30) {
 		return `${Math.floor(duration.asDays())}d ago`;
 	} else if (duration.asMonths() < 12) {
-		return `${Math.floor(duration.asMonths())}month ago`;
+		return `${Math.floor(duration.asMonths())} month ago`;
 	} else {
-		return `${Math.floor(duration.asYears())}year ago`;
+		return timestamp.format("DD/MM/YYYY");
 	}
 }
 
