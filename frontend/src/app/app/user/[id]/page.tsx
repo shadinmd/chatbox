@@ -161,17 +161,17 @@ const User = ({ params }: { params: { id: string } }) => {
 										Message
 									</Link>
 									:
-									requestRecieved ?
-										<button onClick={(e) => accept(requests.find((e) => e.sender?._id! == params.id)?._id!)} className="px-4 py-2 rounded-lg bg-custom-red text-white">
-											accept
+									blocked ?
+										<button onClick={unBlock} className="px-4 py-2 rounded-lg bg-custom-red text-white">
+											Un Block
 										</button> :
-										requestSend ?
-											<button onClick={(e) => cancelRequest(requests.find((e) => e.reciever == params.id)?._id!)} className="px-4 py-2 rounded-lg bg-custom-red text-white">
-												Cancel Request
+										requestRecieved ?
+											<button onClick={(e) => accept(requests.find((e) => e.sender?._id! == params.id)?._id!)} className="px-4 py-2 rounded-lg bg-custom-red text-white">
+												accept
 											</button> :
-											blocked ?
-												<button onClick={unBlock} className="px-4 py-2 rounded-lg bg-custom-red text-white">
-													Un Block
+											requestSend ?
+												<button onClick={(e) => cancelRequest(requests.find((e) => e.reciever == params.id)?._id!)} className="px-4 py-2 rounded-lg bg-custom-red text-white">
+													Cancel Request
 												</button> :
 												<button onClick={requestFriend} className="px-4 py-2 rounded-lg bg-custom-red text-white">
 													Request
