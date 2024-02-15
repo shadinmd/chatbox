@@ -66,6 +66,7 @@ class AuthUsecase {
 				data: {
 					success: response.success,
 					message: response.message,
+					user: response.user,
 					token: ""
 				}
 			}
