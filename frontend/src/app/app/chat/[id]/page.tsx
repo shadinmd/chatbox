@@ -13,6 +13,7 @@ import { isAxiosError } from "axios";
 import ChatModal from "@/components/chat/ChatModal";
 import chatSlice from "@/redux/features/chat/chatSlice";
 import parseTime from "@/utils/timeParser";
+import { useRouter } from "next/navigation";
 
 const s3Url = "https://chatbox-files.s3.ap-south-1.amazonaws.com"
 
@@ -22,13 +23,20 @@ const ChatUser = ({ params }: { params: { id: string } }) => {
 	const chat = useSelector((state: RootState) => state.chat.chats.find((e) => e?._id == params?.id))
 	const friend = useSelector((state: RootState) => state.chat.chats.find((e) => e?._id == params?.id))?.members?.find((e) => e?.user?._id != user?._id)?.user
 	const socket = useSelector((state: RootState) => state.socket.socket)
+
 	const dispatch: AppDispatch = useDispatch()
+	const router = useRouter()
 
 	const [message, setMessage] = useState("")
 	const [file, setFile] = useState<File | null>(null)
 	const [chatModal, setChatModal] = useState(false)
 
 	const [messages, setMessages] = useState<Array<any>>([])
+
+	useEffect(() => {
+		if (!chat)
+			router.push("/app/chat")
+	}, [chat])
 
 	useEffect(() => {
 		Api.get(`/chat/messages/${params.id}`)
