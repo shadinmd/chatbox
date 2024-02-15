@@ -37,14 +37,16 @@ const Login = () => {
 		try {
 			const response = await Api.post("/auth/login", data)
 			if (response.data.success) {
+
 				console.log(response.data)
 				localStorage.setItem("token", response?.data?.token)
 				localStorage.setItem("email", data.email)
 				dispatch(authSlice.actions.setLoggedIn(true))
 				const { payload } = await dispatch(getUser())
 				console.log(payload)
-				socket?.emit("initiate", { id: payload._id })
+				socket?.emit("initiate", { id: payload._id, token: response.data.token })
 				router.push("/app/chat")
+
 			} else {
 				toast.error(response.data.message)
 			}
