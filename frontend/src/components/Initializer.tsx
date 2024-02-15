@@ -51,8 +51,9 @@ const Initializer = ({ children }: { children: React.ReactNode }) => {
 		const interval = setInterval(() => {
 			if (auth) {
 				dispatch(getUser())
+				dispatch(getRequests())
 			}
-		}, 5000)
+		}, 3000)
 
 		return () => {
 			clearInterval(interval)
@@ -94,7 +95,7 @@ const Initializer = ({ children }: { children: React.ReactNode }) => {
 
 				socket?.socket?.on("noti:recieve", (data) => {
 					if (data.status == "success")
-						toast("message", { description: parseMessage(data.message), position: "top-right" })
+						toast("message", { description: parseMessage(data.message, 35), position: "top-right" })
 				})
 
 				socket.socket?.on("chat:friend:request", (data) => {
