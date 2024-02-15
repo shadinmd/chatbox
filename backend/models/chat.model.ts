@@ -18,14 +18,11 @@ const chatSchema = new mongoose.Schema<IChat>({
 	latestMessageTime: {
 		type: Date,
 	},
-	newMessages: {
-		type: Number,
-		default: 0
-	},
 	members: {
 		type: [{
 			user: { type: String, ref: "User", required: true },
-			role: { type: String, enum: ["user", "admin"], required: true }
+			role: { type: String, enum: ["user", "admin"], required: true },
+			unread: { type: Number, default: 0 }
 		}],
 	}
 })

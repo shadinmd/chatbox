@@ -1,4 +1,5 @@
 import IMessage from "../interface/message.interface"
+import ChatModel from "../models/chat.model"
 import MessageModel from "../models/message.model"
 
 class MessageRepository {
@@ -32,9 +33,15 @@ class MessageRepository {
 		}
 	}
 
-	async getAllMessages(id: string) {
+	async getAllMessages(id: string, userId: string) {
 		try {
 			const messages = await MessageModel.find({ chat: id }).populate("file")
+			await ChatModel.updateOne(
+				{ _id: id },
+				{ $set: { "members.$[elem].unread": 0 } },
+				{ arrayFilters: [{ "elem.user": userId }] }
+			)
+
 			return {
 				success: true,
 				message: "fetched messages",

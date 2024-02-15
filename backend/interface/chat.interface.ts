@@ -4,7 +4,6 @@ interface IChat {
 	description?: string,
 	latestMessage?: string,
 	latestMessageTime?: Date,
-	newMessages?: number,
 	members?: string[]
 	group?: boolean
 }

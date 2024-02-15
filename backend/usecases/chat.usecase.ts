@@ -173,9 +173,9 @@ class ChatUsecase {
 		}
 	}
 
-	async getAllMessages(id: string) {
+	async getAllMessages(id: string, userId: string) {
 		try {
-			const response = await this.messageRepository.getAllMessages(id)
+			const response = await this.messageRepository.getAllMessages(id, userId)
 			return {
 				status: response.success ? 200 : 500,
 				data: {

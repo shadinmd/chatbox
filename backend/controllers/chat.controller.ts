@@ -46,7 +46,11 @@ class ChatController {
 	async getAllMessages(req: Request, res: Response) {
 		try {
 			const { id } = req.params
-			const response = await this.chatUsecase.getAllMessages(id)
+			let userId: string = ""
+			if (req.headers.authorization) {
+				userId = this.jwtRepository.decode(req.headers.authorization) as string
+			}
+			const response = await this.chatUsecase.getAllMessages(id, userId)
 			res.status(response.status).send(response.data)
 		} catch (error) {
 			console.log(error)
