@@ -14,10 +14,8 @@ jobs:
   
       steps:
         - uses: actions/checkout@v3
-
-        - name: install dependencies
+        - run: npm install
           working-directory: ./backend
-          run: npm install
 
         - name: create .env file
           working-directory: ./backend
@@ -25,10 +23,9 @@ jobs:
             touch .env
             echo "${{ secrets.CHATBOX_ENV }}" > .env
 
-        - name: remove old process
+        - name: Deploy
+          run: |
+            pm2 stop chatbox || true
+            pm2 delete chatbox || true
+            pm2 --interpreter=$(which ts-node) start ./backend/main.ts --name chatbox
           working-directory: ./backend
-          run: pm2 delete chatbox-server || true
-
-        - name: start new server
-          working-directory: ./backend
-          run: pm2 start --interpreter=/home/admin/.nvm/versions/node/v21.5.0/bin/ts-node main.ts --name chatbox-server
