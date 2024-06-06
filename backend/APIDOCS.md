@@ -11,7 +11,6 @@
 - cryptojs
 - socketio
 
-
 ## Routes
 - [/auth](#auth) : 
     - [/login](#authlogin)
