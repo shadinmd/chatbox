@@ -27,5 +27,5 @@ jobs:
           run: |
             pm2 stop chatbox || true
             pm2 delete chatbox || true
-            pm2 --interpreter=$(which ts-node) start ./backend/main.ts --name chatbox
+            pm2 --interpreter=$(which ts-node) start ./main.ts --name chatbox
           working-directory: ./backend
