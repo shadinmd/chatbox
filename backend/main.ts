@@ -11,7 +11,7 @@ import chatRoute from "./routes/chat.route"
 
 const app = createServer()
 const server = new http.Server(app)
-const io = configureSocket(server)
+configureSocket(server)
 connectDb()
 
 // routes
@@ -20,7 +20,7 @@ app.use("/user", userRoute)
 app.use("/admin", adminRoute)
 app.use("/chat", chatRoute)
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (_: Request, res: Response) => {
 	res.redirect("https://shadinmhd.in")
 })
 
