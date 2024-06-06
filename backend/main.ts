@@ -14,7 +14,6 @@ const server = new http.Server(app)
 configureSocket(server)
 connectDb()
 
-// routes
 app.use("/auth", authRoute)
 app.use("/user", userRoute)
 app.use("/admin", adminRoute)
