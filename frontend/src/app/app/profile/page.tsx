@@ -25,7 +25,7 @@ const Profile = () => {
 		(async () => {
 			setValue("username", user.user.username)
 			setValue("email", user.user.email)
-			setValue("bio", user.user.bio)
+			setValue("bio", user.user.bio || "")
 		})()
 	}, [])
 
