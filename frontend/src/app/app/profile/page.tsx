@@ -65,7 +65,7 @@ const Profile = () => {
 						<div>
 							<p className="text-6xl font-bold text-custom-blue">Profile</p>
 						</div>
-						<div className="flex items-center justify-center gap-10 h-full w-full">
+						<div className="flex flex-col md:flex-row items-center justify-center gap-10 h-full w-full">
 							<form onSubmit={submitProfile} className="flex gap-10">
 								<label htmlFor="select-image" className="h-60 w-60 rounded-full object-cover object-center">
 									{
