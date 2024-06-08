@@ -39,7 +39,7 @@ const Info = () => {
 					</p>
 				</div>
 				<div className="flex gap-3 font-bold">
-					<p>Last onlien</p>
+					<p>Last online</p>
 					<p>{moment(user.lastOnline).format("DD/MM/YYYY")}</p>
 				</div>
 			</div>
