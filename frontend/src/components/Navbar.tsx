@@ -19,9 +19,6 @@ const Navbar = () => {
 				ChatBox
 			</Link>
 			<div className="flex items-center justify-center gap-4 text-chat-blue font-bold text-base">
-				<Link href={"/download"} className="text-white hover:text-custom-red transition-all rounded-lg px-4 py-2">
-					Download
-				</Link>
 				<button onClick={() => getStarted()} className="bg-custom-red  text-white px-4 py-2  rounded-lg">
 					Get Started
 				</button>
