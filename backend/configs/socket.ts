@@ -32,9 +32,6 @@ const getSocketId = (id: string) => {
 		return false
 }
 
-const newConnection = ({ }) => {
-
-}
 
 const configureSocket = (server: http.Server) => {
 	const io = new scoket.Server(server, {
